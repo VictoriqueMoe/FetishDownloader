@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "outDir": "./lib/",
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "baseUrl": "./src",
+    "module": "amd",
+    "target": "es2016",
+    "allowJs": false,
+    "sourceMap": true,
+    "strict": true,
+    "noEmit": false,
+    "checkJs": false,
+    "strictNullChecks": false,
+    "strictFunctionTypes": true,
+    "declaration" : true,
+    "downlevelIteration": true,
+    "noEmitOnError" : true,
+    "watch": false,
+    "lib": [
+      "es2015",
+      "dom"
+    ]
+  },
+  "compileOnSave": false,
+  "include": [
+    "./src/**/*.ts"
+  ],
+  "awesomeTypescriptLoaderOptions": {
+    "useCache": false
+  }
+}
