@@ -39,6 +39,11 @@ export class FetishImage {
         return this._actualImage;
     }
 
+    public unloadImage():void{
+        this._isInit = false;
+        this._actualImage = null;
+    }
+
     public loadImage(): Promise<void> {
         if (this._isInit) {
             return Promise.resolve();
