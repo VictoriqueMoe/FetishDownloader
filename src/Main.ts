@@ -11,17 +11,17 @@ export class Main {
         throw new TypeError();
     }
 
-    private static doDownload(files: FetishImage[], title?: string ): Promise<void> {
+    private static doDownload(files: FetishImage[], title?: string): Promise<void> {
         Main.setLabel("compressing");
         let zip: JSZip = new JSZip();
         for (let img of files) {
             zip.file(img.title, img.image);
         }
         return zip.generateAsync({type: "blob"}).then(function (blob: Blob): void {
-            if(!title){
+            if (!title) {
                 title = QueryString.tags;
-            }else {
-                title = `${QueryString.tags} (${title})` ;
+            } else {
+                title = `${QueryString.tags} (${title})`;
             }
             saveAs(blob, title + ".zip");
             Main.setLabel();
@@ -118,7 +118,7 @@ export class Main {
                     if (failedPages.length > 0) {
                         alert(`Failed to download pictures from ${failedPages}`);
                     }
-                    let batchLimit:number = 1000;
+                    let batchLimit: number = 1000;
                     count = 0;
                     let isBatch: boolean = Main._images.length > batchLimit;
                     let batch: FetishImage[] = [];
@@ -136,7 +136,7 @@ export class Main {
                                         let batchNum: string = rounded.toString()[0];
                                         let of: number = Math.floor(Math.round(Main._images.length / batchLimit) * batchLimit);
                                         let ofStr: string = of.toString()[0];
-                                        if(Main._images.length % batchLimit !== 0){
+                                        if (Main._images.length % batchLimit !== 0 && Main._images.length % batchLimit > batchLimit) {
                                             ofStr = String(parseInt(ofStr) + 1);
                                         }
                                         await Main.doDownload(batch, `${batchNum} of ${ofStr}`);

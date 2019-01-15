@@ -131,6 +131,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             }
             return this._actualImage;
         }
+        unloadImage() {
+            this._isInit = false;
+            this._actualImage = null;
+        }
         loadImage() {
             if (this._isInit) {
                 return Promise.resolve();
@@ -170,13 +174,20 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __awaiter = 
         constructor() {
             throw new TypeError();
         }
-        static doDownload() {
+        static doDownload(files, title) {
+            Main.setLabel("compressing");
             let zip = new JSZip();
-            for (let img of Main._images) {
+            for (let img of files) {
                 zip.file(img.title, img.image);
             }
-            zip.generateAsync({ type: "blob" }).then(function (blob) {
-                saveAs(blob, Utils_1.QueryString.tags + ".zip");
+            return zip.generateAsync({ type: "blob" }).then(function (blob) {
+                if (!title) {
+                    title = Utils_1.QueryString.tags;
+                }
+                else {
+                    title = `${Utils_1.QueryString.tags} (${title})`;
+                }
+                saveAs(blob, title + ".zip");
                 Main.setLabel();
             });
         }
@@ -208,7 +219,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __awaiter = 
                         return;
                     }
                     if (Main._isInit) {
-                        Main.doDownload();
+                        Main.doDownload(Main._images);
                     }
                     else {
                         idDownloading = true;
@@ -240,16 +251,22 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __awaiter = 
                             });
                         }
                         let count = 0;
+                        let failedPages = [];
                         for (let url of urls) {
                             count++;
-                            const response = yield fetch(url);
-                            const html = yield response.text();
-                            let parser = new DOMParser();
-                            let doc = parser.parseFromString(html, "text/html");
-                            let d = doc.getElementById("post-list-posts");
-                            Main._images = Main._images.concat(Parser_1.Parser.parse(d));
-                            let percent = Math.floor(100 * count / urls.length);
-                            Main.setLabel(`Parsing pages ${percent.toString()}% done`);
+                            try {
+                                const response = yield fetch(url);
+                                const html = yield response.text();
+                                let parser = new DOMParser();
+                                let doc = parser.parseFromString(html, "text/html");
+                                let d = doc.getElementById("post-list-posts");
+                                Main._images = Main._images.concat(Parser_1.Parser.parse(d));
+                                let percent = Math.floor(100 * count / urls.length);
+                                Main.setLabel(`Parsing pages ${percent.toString()}% done`);
+                            }
+                            catch (e) {
+                                failedPages.push(url);
+                            }
                         }
                         if (Main._images.length > 100) {
                             let f = confirm(`Warning, you are about to mass download ${Main._images.length} images, this can cause issues; your browser running out of memory, or konachan going down as Cloudflare might think this is a DOS attack. \nThere is no guarantee that all images will be downloaded without error, continue?`);
@@ -259,19 +276,52 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __awaiter = 
                                 return;
                             }
                         }
+                        if (failedPages.length > 0) {
+                            alert(`Failed to download pictures from ${failedPages}`);
+                        }
+                        let batchLimit = 1000;
                         count = 0;
+                        let isBatch = Main._images.length > batchLimit;
+                        let batch = [];
                         for (let im of Main._images) {
                             if (!im.isInit) {
-                                count++;
-                                yield delay(100);
-                                yield im.loadImage();
-                                let percent = Math.floor(100 * count / Main._images.length);
-                                Main.setLabel(`Downloading images ${percent.toString()}% done (${count} out of ${Main._images.length} done)`);
+                                try {
+                                    count++;
+                                    yield delay(50);
+                                    yield im.loadImage();
+                                    Main.setLabel(`${count} out of ${Main._images.length} done`);
+                                    if (isBatch) {
+                                        batch.push(im);
+                                        if (count % batchLimit === 0) {
+                                            let rounded = Math.round(count / batchLimit) * batchLimit;
+                                            let batchNum = rounded.toString()[0];
+                                            let of = Math.floor(Math.round(Main._images.length / batchLimit) * batchLimit);
+                                            let ofStr = of.toString()[0];
+                                            if (Main._images.length % batchLimit !== 0 && Main._images.length % batchLimit > batchLimit) {
+                                                ofStr = String(parseInt(ofStr) + 1);
+                                            }
+                                            yield Main.doDownload(batch, `${batchNum} of ${ofStr}`);
+                                            for (let i = 0; i < batch.length; i++) {
+                                                batch[i].unloadImage();
+                                            }
+                                            batch = [];
+                                        }
+                                    }
+                                }
+                                catch (e) {
+                                    yield delay(4000);
+                                }
                             }
                         }
-                        Main.setLabel("compressing");
-                        Main._isInit = true;
-                        Main.doDownload();
+                        if (isBatch && batch.length > 0) {
+                            // download the rest of the batch
+                            Main.doDownload(batch, "final");
+                            // inti is not true, as batches remove images as they are downloaded
+                        }
+                        else {
+                            Main.doDownload(Main._images);
+                            Main._isInit = true;
+                        }
                         idDownloading = false;
                     }
                 }));
