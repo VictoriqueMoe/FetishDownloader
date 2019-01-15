@@ -154,10 +154,11 @@ export class Main {
                     if (isBatch && batch.length > 0) {
                         // download the rest of the batch
                         Main.doDownload(batch, "final");
+                        // inti is not true, as batches remove images as they are downloaded
                     } else {
                         Main.doDownload(Main._images);
+                        Main._isInit = true;
                     }
-                    Main._isInit = true;
                     idDownloading = false;
                 }
             });
