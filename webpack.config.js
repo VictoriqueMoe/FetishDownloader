@@ -2,10 +2,12 @@ module.exports = env => {
     const CircularDependencyPlugin = require('circular-dependency-plugin');
     const path = require("path");
     const {CheckerPlugin} = require('awesome-typescript-loader');
+    const webpack = require("webpack");
+    const fs = require('fs');
     return {
         entry: "./src/Main.ts",
         externals: ["file-saver", "JSZip"],
-        devtool: env === "development" ? 'source-map' : "none",
+        devtool: env === "development" ? 'hidden-source-map' : "none",
         module: {
             rules: [
                 {
@@ -32,10 +34,14 @@ module.exports = env => {
                 cwd: process.cwd(),
             }),
             new CheckerPlugin(),
+            new webpack.BannerPlugin({
+                banner : fs.readFileSync('./GM.txt', 'utf8'),
+                raw: true
+            })
         ],
         output: {
             path: path.join(__dirname, "dist"),
-            filename: "bundle.js",
+            filename: "fetishDownloader.user.js",
             libraryTarget: "umd",
             library: "Fetish",
         }
