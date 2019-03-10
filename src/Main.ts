@@ -2,7 +2,6 @@ import {FetishImage} from "FetishImage";
 import {Parser} from "Parser";
 import {AjaxUtils, MathUtil, QueryString} from "Utils";
 import * as JSZip from "JSZip";
-
 export class Main {
     private static _isInit: boolean = false;
     private static _images: FetishImage[] = [];

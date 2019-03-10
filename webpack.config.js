@@ -4,6 +4,8 @@ module.exports = env => {
     const {CheckerPlugin} = require('awesome-typescript-loader');
     const webpack = require("webpack");
     const fs = require('fs');
+    const METADATA = fs.readFileSync('./GM.txt', 'utf8');
+
     return {
         entry: "./src/Main.ts",
         externals: ["file-saver", "JSZip"],
@@ -35,8 +37,9 @@ module.exports = env => {
             }),
             new CheckerPlugin(),
             new webpack.BannerPlugin({
-                banner : fs.readFileSync('./GM.txt', 'utf8'),
-                raw: true
+                banner: METADATA,
+                raw: true,
+                entryOnly: true
             })
         ],
         output: {

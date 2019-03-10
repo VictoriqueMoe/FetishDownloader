@@ -1,6 +1,5 @@
 import {FetishImage} from "FetishImage";
 import {ImageContainerTyping} from "Typings";
-
 export class Parser {
     public static parse(postList: HTMLUListElement): FetishImage[] {
         let childrenLi: NodeListOf<HTMLLIElement> = postList.childNodes as NodeListOf<HTMLLIElement>;

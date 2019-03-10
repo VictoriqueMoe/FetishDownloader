@@ -11,6 +11,7 @@
     "strict": true,
     "noEmit": false,
     "checkJs": false,
+    "removeComments": false,
     "strictNullChecks": false,
     "strictFunctionTypes": true,
     "declaration" : true,
