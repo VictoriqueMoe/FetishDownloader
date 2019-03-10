@@ -7,6 +7,11 @@
     "compileDevlopment": "webpack --env development",
     "compileProduction": "webpack --env production"
   },
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/VictoriqueMoe/FetishDownloader.git"
+  },
+  "homepage": "https://github.com/VictoriqueMoe/FetishDownloader",
   "author": "Victorique",
   "license": "MIT",
   "devDependencies": {
