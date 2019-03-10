@@ -181,7 +181,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __awaiter = 
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! FetishImage */ "./src/FetishImage.ts"), __webpack_require__(/*! Utils */ "./src/Utils.ts"), __webpack_require__(/*! JSZip */ "JSZip")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, FetishImage_1, Utils_1, JSZip) {
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! Parser */ "./src/Parser.ts"), __webpack_require__(/*! Utils */ "./src/Utils.ts"), __webpack_require__(/*! JSZip */ "JSZip")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, Parser_1, Utils_1, JSZip) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Main {
@@ -229,28 +229,115 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __awaiter = 
                 Main.setLabel();
                 let idDownloading = false;
                 document.getElementById("fetishAnchor").addEventListener("click", (e) => __awaiter(this, void 0, void 0, function* () {
-                    let tags = Utils_1.QueryString.tags;
-                    fetch(`https://konachan.net/post.json?limit=10000000&tags=${tags}`).then(resp => {
-                        return resp.json();
-                    }).then(json => {
-                        // title = `${aNameTag.href.substr(aNameTag.href.lastIndexOf('/') + 1)}.${url.split(".").pop()}`;
-                        for (let jsonObj of json) {
-                            let url = jsonObj.jpeg_url;
-                            let res = `${jsonObj.height}x${jsonObj.width}`;
-                            let title = `${jsonObj.tags.split(" ").join("_")}.jpg`;
-                            let info = {
-                                url: url,
-                                res: res,
-                                title: title
-                            };
-                            Main._images.push(new FetishImage_1.FetishImage(info));
+                    if (idDownloading) {
+                        return;
+                    }
+                    if (Main._isInit) {
+                        Main.doDownload(Main._images);
+                    }
+                    else {
+                        idDownloading = true;
+                        Main.setLabel("Parsing pages... Please wait");
+                        Main._images = Main._images.concat(Parser_1.Parser.parse(document.getElementById("post-list-posts")));
+                        let allPages = document.querySelectorAll("#paginator a:not(.next_page)");
+                        let arrOfPageA = Array.from(allPages);
+                        let firstPage = arrOfPageA[0];
+                        let lastPage = arrOfPageA[arrOfPageA.length - 1];
+                        let firstPageNumber = Number.parseInt(firstPage.text);
+                        let lastPageNumber = Number.parseInt(lastPage.text);
+                        let rangeBetween = Utils_1.MathUtil.range(firstPageNumber, lastPageNumber);
+                        let baseUrl = window.location.href;
+                        let urls = [];
+                        let currentPage = Utils_1.QueryString.page === undefined ? 1 : Utils_1.QueryString.page;
+                        for (let i = 0; i < rangeBetween.length; i++) {
+                            let num = String(rangeBetween[i]);
+                            if (num == currentPage) {
+                                continue;
+                            }
+                            let newUrl = Utils_1.AjaxUtils.addParameter(baseUrl, "page", num.toString(), true);
+                            urls.push(newUrl);
                         }
-                        return Promise.all(Main._images.map(im => im.loadImage()));
-                    }).then(() => {
-                        Main.doDownload(Main._images).then(() => {
-                            alert("done");
-                        });
-                    });
+                        function delay(ms) {
+                            return __awaiter(this, void 0, void 0, function* () {
+                                return new Promise((resolve) => {
+                                    setTimeout(resolve, ms);
+                                });
+                            });
+                        }
+                        let count = 0;
+                        let failedPages = [];
+                        for (let url of urls) {
+                            count++;
+                            try {
+                                const response = yield fetch(url);
+                                const html = yield response.text();
+                                let parser = new DOMParser();
+                                let doc = parser.parseFromString(html, "text/html");
+                                let d = doc.getElementById("post-list-posts");
+                                Main._images = Main._images.concat(Parser_1.Parser.parse(d));
+                                let percent = Math.floor(100 * count / urls.length);
+                                Main.setLabel(`Parsing pages ${percent.toString()}% done`);
+                            }
+                            catch (e) {
+                                failedPages.push(url);
+                            }
+                        }
+                        if (Main._images.length > 100) {
+                            let f = confirm(`Warning, you are about to mass download ${Main._images.length} images, this can cause issues; your browser running out of memory, or konachan going down as Cloudflare might think this is a DOS attack. \nThere is no guarantee that all images will be downloaded without error, continue?`);
+                            if (!f) {
+                                Main.setLabel();
+                                idDownloading = false;
+                                return;
+                            }
+                        }
+                        if (failedPages.length > 0) {
+                            alert(`Failed to download pictures from ${failedPages}`);
+                        }
+                        let batchLimit = 1000;
+                        count = 0;
+                        let isBatch = Main._images.length > batchLimit;
+                        let batch = [];
+                        for (let im of Main._images) {
+                            if (!im.isInit) {
+                                try {
+                                    count++;
+                                    yield delay(50);
+                                    yield im.loadImage();
+                                    Main.setLabel(`${count} out of ${Main._images.length} done`);
+                                    if (isBatch) {
+                                        batch.push(im);
+                                        if (count % batchLimit === 0) {
+                                            let rounded = Math.round(count / batchLimit) * batchLimit;
+                                            let batchNum = rounded.toString()[0];
+                                            let of = Math.floor(Math.round(Main._images.length / batchLimit) * batchLimit);
+                                            let ofStr = of.toString()[0];
+                                            if (Main._images.length % batchLimit !== 0 && Main._images.length % batchLimit > batchLimit) {
+                                                ofStr = String(parseInt(ofStr) + 1);
+                                            }
+                                            yield Main.doDownload(batch, `${batchNum} of ${ofStr}`);
+                                            for (let i = 0; i < batch.length; i++) {
+                                                batch[i].unloadImage();
+                                            }
+                                            batch = [];
+                                        }
+                                    }
+                                }
+                                catch (e) {
+                                    yield delay(4000);
+                                }
+                            }
+                        }
+                        if (isBatch && batch.length > 0) {
+                            // download the rest of the batch
+                            Main.doDownload(batch, "final");
+                            // inti is not true, as batches remove images as they are downloaded
+                        }
+                        else {
+                            Main.doDownload(Main._images);
+                            Main._isInit = true;
+                        }
+                        idDownloading = false;
+                    }
                 }));
             }
         }
@@ -259,6 +346,53 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __awaiter = 
     Main._images = [];
     exports.Main = Main;
     Main.init();
+}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ "./src/Parser.ts":
+/*!***********************!*\
+  !*** ./src/Parser.ts ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! FetishImage */ "./src/FetishImage.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, FetishImage_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class Parser {
+        static parse(postList) {
+            let childrenLi = postList.childNodes;
+            let retArr = [];
+            for (let i = 0; i < childrenLi.length; i++) {
+                let e = childrenLi[i];
+                if (e.nodeType == Node.ELEMENT_NODE) {
+                    let containerInfo = Parser._parseContainer(e);
+                    retArr.push(new FetishImage_1.FetishImage(containerInfo));
+                }
+            }
+            return retArr;
+        }
+        static _parseContainer(el) {
+            let url;
+            let res;
+            let title;
+            let tagForTitle = el.getElementsByClassName("inner")[0];
+            let aNameTag = tagForTitle.firstChild;
+            let infoTag = el.getElementsByClassName("directlink")[0];
+            url = infoTag.href;
+            res = infoTag.getElementsByClassName("directlink-res")[0].innerHTML;
+            title = `${aNameTag.href.substr(aNameTag.href.lastIndexOf('/') + 1)}.${url.split(".").pop()}`;
+            return {
+                url: url,
+                res: res,
+                title: title
+            };
+        }
+    }
+    exports.Parser = Parser;
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
