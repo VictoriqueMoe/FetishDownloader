@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Fetish Downloader
 // @namespace    victorique.moe
-// @version      1.0.0
+// @version      1.0.1
 // @description  Download all your lovely fetishes (no furries)
 // @author       Victorique
 // @match        https://konachan.net/post?*
@@ -963,15 +963,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! Parser */ "./src/Parser.ts"), __webpack_require__(/*! Utils */ "./src/Utils.ts"), __webpack_require__(/*! JSZip */ "JSZip")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, Parser_1, Utils_1, JSZip) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! Parser */ "./src/Parser.ts"), __webpack_require__(/*! Utils */ "./src/Utils.ts"), __webpack_require__(/*! JSZip */ "JSZip")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, Parser_1, Utils_1, JSZip) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Main {
@@ -1018,7 +1010,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __awaiter = 
                 buildAnchor();
                 Main.setLabel();
                 let idDownloading = false;
-                document.getElementById("fetishAnchor").addEventListener("click", (e) => __awaiter(this, void 0, void 0, function* () {
+                document.getElementById("fetishAnchor").addEventListener("click", async (e) => {
                     if (idDownloading) {
                         return;
                     }
@@ -1047,20 +1039,59 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __awaiter = 
                             let newUrl = Utils_1.AjaxUtils.addParameter(baseUrl, "page", num.toString(), true);
                             urls.push(newUrl);
                         }
-                        function delay(ms) {
-                            return __awaiter(this, void 0, void 0, function* () {
-                                return new Promise((resolve) => {
-                                    setTimeout(resolve, ms);
-                                });
+                        async function delay(ms) {
+                            return new Promise((resolve) => {
+                                setTimeout(resolve, ms);
                             });
+                        }
+                        let batchLimit = 1000;
+                        async function doDownload(images) {
+                            let failedImages = [];
+                            for (let im of images) {
+                                if (!im.isInit) {
+                                    try {
+                                        count++;
+                                        await delay(50);
+                                        await im.loadImage();
+                                        Main.setLabel(`${count} out of ${images.length} done`);
+                                        if (isBatch) {
+                                            batch.push(im);
+                                            if (count % batchLimit === 0) {
+                                                let rounded = Math.round(count / batchLimit) * batchLimit;
+                                                let batchNum = rounded.toString()[0];
+                                                let of = Math.floor(Math.round(images.length / batchLimit) * batchLimit);
+                                                let ofStr = of.toString()[0];
+                                                if (images.length % batchLimit !== 0 && images.length % batchLimit > batchLimit) {
+                                                    ofStr = String(parseInt(ofStr) + 1);
+                                                }
+                                                await Main.doDownload(batch, `${batchNum} of ${ofStr}`);
+                                                for (let i = 0; i < batch.length; i++) {
+                                                    batch[i].unloadImage();
+                                                }
+                                                batch = [];
+                                            }
+                                        }
+                                    }
+                                    catch (e) {
+                                        failedImages.push(im);
+                                        await delay(4000);
+                                    }
+                                }
+                            }
+                            if (failedImages.length > 0) {
+                                count = 0;
+                                Main.setLabel("Re-retrying failed images...");
+                                await doDownload(failedImages);
+                                failedImages = [];
+                            }
                         }
                         let count = 0;
                         let failedPages = [];
                         for (let url of urls) {
                             count++;
                             try {
-                                const response = yield fetch(url);
-                                const html = yield response.text();
+                                const response = await fetch(url);
+                                const html = await response.text();
                                 let parser = new DOMParser();
                                 let doc = parser.parseFromString(html, "text/html");
                                 let d = doc.getElementById("post-list-posts");
@@ -1083,58 +1114,58 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __awaiter = 
                         if (failedPages.length > 0) {
                             alert(`Failed to download pictures from ${failedPages}`);
                         }
-                        let batchLimit = 1000;
                         count = 0;
                         let isBatch = Main._images.length > batchLimit;
                         let batch = [];
-                        for (let im of Main._images) {
+                        await doDownload(Main._images);
+                        /*for (let im of Main._images) {
                             if (!im.isInit) {
                                 try {
                                     count++;
-                                    yield delay(50);
-                                    yield im.loadImage();
+                                    await delay(50);
+                                    await im.loadImage();
                                     Main.setLabel(`${count} out of ${Main._images.length} done`);
                                     if (isBatch) {
                                         batch.push(im);
                                         if (count % batchLimit === 0) {
-                                            let rounded = Math.round(count / batchLimit) * batchLimit;
-                                            let batchNum = rounded.toString()[0];
-                                            let of = Math.floor(Math.round(Main._images.length / batchLimit) * batchLimit);
-                                            let ofStr = of.toString()[0];
+                                            let rounded: number = Math.round(count / batchLimit) * batchLimit;
+                                            let batchNum: string = rounded.toString()[0];
+                                            let of: number = Math.floor(Math.round(Main._images.length / batchLimit) * batchLimit);
+                                            let ofStr: string = of.toString()[0];
                                             if (Main._images.length % batchLimit !== 0 && Main._images.length % batchLimit > batchLimit) {
                                                 ofStr = String(parseInt(ofStr) + 1);
                                             }
-                                            yield Main.doDownload(batch, `${batchNum} of ${ofStr}`);
-                                            for (let i = 0; i < batch.length; i++) {
+                                            await Main.doDownload(batch, `${batchNum} of ${ofStr}`);
+                                            for (let i: number = 0; i < batch.length; i++) {
                                                 batch[i].unloadImage();
                                             }
                                             batch = [];
                                         }
                                     }
-                                }
-                                catch (e) {
-                                    yield delay(4000);
+                                } catch (e) {
+                                    failedImages.push(im);
+                                    await delay(4000);
                                 }
                             }
-                        }
+                        }*/
                         if (isBatch && batch.length > 0) {
                             // download the rest of the batch
-                            Main.doDownload(batch, "final");
+                            await Main.doDownload(batch, "final");
                             // inti is not true, as batches remove images as they are downloaded
                         }
                         else {
-                            Main.doDownload(Main._images);
+                            await Main.doDownload(Main._images);
                             Main._isInit = true;
                         }
                         idDownloading = false;
                     }
-                }));
+                });
             }
         }
     }
+    exports.Main = Main;
     Main._isInit = false;
     Main._images = [];
-    exports.Main = Main;
     Main.init();
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -1276,6 +1307,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                     let xhr = new XMLHttpRequest();
                     xhr.open("GET", url);
                     xhr.responseType = "blob";
+                    xhr.timeout = 20000;
                     xhr.onerror = () => {
                         reject("Network error.");
                     };
@@ -1286,6 +1318,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                         else {
                             reject("Loading error:" + xhr.statusText);
                         }
+                    };
+                    xhr.ontimeout = () => {
+                        reject("Network error.");
                     };
                     xhr.send();
                 }

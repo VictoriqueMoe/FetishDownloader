@@ -2,6 +2,7 @@ import {FetishImage} from "FetishImage";
 import {Parser} from "Parser";
 import {AjaxUtils, MathUtil, QueryString} from "Utils";
 import * as JSZip from "JSZip";
+
 export class Main {
     private static _isInit: boolean = false;
     private static _images: FetishImage[] = [];
@@ -88,6 +89,46 @@ export class Main {
                             setTimeout(resolve, ms);
                         });
                     }
+                    let batchLimit: number = 1000;
+                    async function doDownload(images: FetishImage[]): Promise<void> {
+                        let failedImages: FetishImage[] = [];
+                        for (let im of images) {
+                            if (!im.isInit) {
+                                try {
+                                    count++;
+                                    await delay(50);
+                                    await im.loadImage();
+                                    Main.setLabel(`${count} out of ${images.length} done`);
+                                    if (isBatch) {
+                                        batch.push(im);
+                                        if (count % batchLimit === 0) {
+                                            let rounded: number = Math.round(count / batchLimit) * batchLimit;
+                                            let batchNum: string = rounded.toString()[0];
+                                            let of: number = Math.floor(Math.round(images.length / batchLimit) * batchLimit);
+                                            let ofStr: string = of.toString()[0];
+                                            if (images.length % batchLimit !== 0 && images.length % batchLimit > batchLimit) {
+                                                ofStr = String(parseInt(ofStr) + 1);
+                                            }
+                                            await Main.doDownload(batch, `${batchNum} of ${ofStr}`);
+                                            for (let i: number = 0; i < batch.length; i++) {
+                                                batch[i].unloadImage();
+                                            }
+                                            batch = [];
+                                        }
+                                    }
+                                } catch (e) {
+                                    failedImages.push(im);
+                                    await delay(4000);
+                                }
+                            }
+                        }
+                        if(failedImages.length > 0){
+                            count = 0;
+                            Main.setLabel("Re-retrying failed images...");
+                            await doDownload(failedImages);
+                            failedImages = [];
+                        }
+                    }
 
                     let count: number = 0;
                     let failedPages: string[] = [];
@@ -117,11 +158,11 @@ export class Main {
                     if (failedPages.length > 0) {
                         alert(`Failed to download pictures from ${failedPages}`);
                     }
-                    let batchLimit: number = 1000;
                     count = 0;
                     let isBatch: boolean = Main._images.length > batchLimit;
                     let batch: FetishImage[] = [];
-                    for (let im of Main._images) {
+                    await doDownload(Main._images);
+                    /*for (let im of Main._images) {
                         if (!im.isInit) {
                             try {
                                 count++;
@@ -146,16 +187,17 @@ export class Main {
                                     }
                                 }
                             } catch (e) {
+                                failedImages.push(im);
                                 await delay(4000);
                             }
                         }
-                    }
+                    }*/
                     if (isBatch && batch.length > 0) {
                         // download the rest of the batch
-                        Main.doDownload(batch, "final");
+                        await Main.doDownload(batch, "final");
                         // inti is not true, as batches remove images as they are downloaded
                     } else {
-                        Main.doDownload(Main._images);
+                        await Main.doDownload(Main._images);
                         Main._isInit = true;
                     }
                     idDownloading = false;

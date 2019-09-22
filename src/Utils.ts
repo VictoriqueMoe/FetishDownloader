@@ -75,6 +75,7 @@ export class AjaxUtils {
                 let xhr: XMLHttpRequest = new XMLHttpRequest();
                 xhr.open("GET", url);
                 xhr.responseType = "blob";
+                xhr.timeout = 20000;
                 xhr.onerror = () => {
                     reject("Network error.");
                 };
@@ -84,6 +85,9 @@ export class AjaxUtils {
                     } else {
                         reject("Loading error:" + xhr.statusText);
                     }
+                };
+                xhr.ontimeout = () => {
+                    reject("Network error.");
                 };
                 xhr.send();
             } catch (err) {
