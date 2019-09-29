@@ -881,6 +881,54 @@ module.exports = g;
 
 /***/ }),
 
+/***/ "./src/FetishDocumentParserFactory.ts":
+/*!********************************************!*\
+  !*** ./src/FetishDocumentParserFactory.ts ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! FetishImage */ "./src/FetishImage.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, FetishImage_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class KonachanParser {
+        parse(doc) {
+            let list = doc.getElementById("post-list-posts");
+            let childrenLi = list.childNodes;
+            let retArr = [];
+            for (let i = 0; i < childrenLi.length; i++) {
+                let e = childrenLi[i];
+                if (e.nodeType == Node.ELEMENT_NODE) {
+                    let containerInfo = this._parseContainer(e);
+                    retArr.push(new FetishImage_1.FetishImage(containerInfo));
+                }
+            }
+            return retArr;
+        }
+        _parseContainer(el) {
+            let url;
+            let res;
+            let title;
+            let tagForTitle = el.getElementsByClassName("inner")[0];
+            let aNameTag = tagForTitle.firstChild;
+            let infoTag = el.getElementsByClassName("directlink")[0];
+            url = infoTag.href;
+            res = infoTag.getElementsByClassName("directlink-res")[0].innerHTML;
+            title = `${aNameTag.href.substr(aNameTag.href.lastIndexOf('/') + 1)}.${url.split(".").pop()}`;
+            return {
+                url: url,
+                res: res,
+                title: title
+            };
+        }
+    }
+    exports.KonachanParser = KonachanParser;
+}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
 /***/ "./src/FetishImage.ts":
 /*!****************************!*\
   !*** ./src/FetishImage.ts ***!
@@ -888,7 +936,7 @@ module.exports = g;
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! Utils */ "./src/Utils.ts"), __webpack_require__(/*! js-sha256 */ "./node_modules/js-sha256/src/sha256.js")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, Utils_1, js_sha256_1) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! js-sha256 */ "./node_modules/js-sha256/src/sha256.js")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, js_sha256_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class FetishImage {
@@ -932,9 +980,34 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             if (this._isInit) {
                 return Promise.resolve();
             }
-            return Utils_1.AjaxUtils.loadXHR(this.url).then(image => {
+            const FETCH_TIMEOUT = 2000;
+            let didTimeOut = false;
+            return new Promise((resolve, reject) => {
+                const timeout = setTimeout(() => {
+                    didTimeOut = true;
+                    reject(new Error('Request timed out'));
+                }, FETCH_TIMEOUT);
+                fetch(this._url).then(response => {
+                    // Clear the timeout as cleanup
+                    clearTimeout(timeout);
+                    if (!didTimeOut) {
+                        if (!response.ok) {
+                            reject("unable to load");
+                            return;
+                        }
+                        resolve(response.blob());
+                    }
+                }).catch(err => {
+                    if (didTimeOut) {
+                        return;
+                    }
+                    reject(err);
+                });
+            }).then(image => {
+                if (image.size === 0) {
+                    throw new Error("unable to load");
+                }
                 this._actualImage = image;
-                // Konachan has a thing about setting files with the same name, but not the same actual image, this will append a hash of the image as the file name, thus, removing duplicated files, and if there is a file with the same name that is really a dupe, then when you extract it, it will have the same hash
                 let reader = new FileReader();
                 reader.readAsBinaryString(image);
                 return getResult(reader);
@@ -956,6 +1029,125 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 /***/ }),
 
+/***/ "./src/FetishSite.ts":
+/*!***************************!*\
+  !*** ./src/FetishSite.ts ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ./IFetishSite */ "./src/IFetishSite.ts"), __webpack_require__(/*! ./Utils */ "./src/Utils.ts"), __webpack_require__(/*! ./Main */ "./src/Main.ts"), __webpack_require__(/*! ./FetishDocumentParserFactory */ "./src/FetishDocumentParserFactory.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, IFetishSite_1, Utils_1, Main_1, FetishDocumentParserFactory_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class FetishSite {
+        constructor(doc) {
+            this.doc = doc;
+        }
+    }
+    class KonaChan extends FetishSite {
+        constructor(doc) {
+            super(doc);
+        }
+        get pages() {
+            async function load(urls) {
+                let count = 0;
+                let arr = [];
+                for (let url of urls) {
+                    let response = await fetch(url);
+                    let html = await response.text();
+                    count++;
+                    let domParser = new DOMParser();
+                    let doc = domParser.parseFromString(html, "text/html");
+                    let fe = new FetishPage(doc, this.site);
+                    let percent = Math.floor(100 * count / urls.length);
+                    Main_1.Main.setLabel(`Parsing pages ${percent.toString()}% done`);
+                    arr.push(fe);
+                }
+                arr.push(new FetishPage(this.doc, this.site));
+                return arr;
+            }
+            let allPages = this.doc.querySelectorAll("#paginator a:not(.next_page):not(.previous_page)");
+            let urls = [];
+            if (allPages.length > 0) {
+                let arrOfPageA = Array.from(allPages);
+                let firstPage = arrOfPageA[0];
+                let lastPage = arrOfPageA[arrOfPageA.length - 1];
+                let firstPageNumber = Number.parseInt(firstPage.text);
+                let lastPageNumber = Number.parseInt(lastPage.text);
+                let rangeBetween = Utils_1.MathUtil.range(firstPageNumber, lastPageNumber);
+                let baseUrl = window.location.href;
+                let currentPage = Utils_1.QueryString.page === undefined ? 1 : Utils_1.QueryString.page;
+                for (let i = 0; i < rangeBetween.length; i++) {
+                    let num = String(rangeBetween[i]);
+                    if (num == currentPage) {
+                        continue;
+                    }
+                    let newUrl = Utils_1.AjaxUtils.addParameter(baseUrl, "page", num.toString(), true);
+                    urls.push(newUrl);
+                }
+            }
+            return load.call(this, urls);
+        }
+        get site() {
+            return IFetishSite_1.SITES.KONACHAN;
+        }
+    }
+    class FetishPage {
+        constructor(doc, site) {
+            this._imageCahce = [];
+            switch (site) {
+                case IFetishSite_1.SITES.KONACHAN:
+                    this.fetishDocumentParser = new FetishDocumentParserFactory_1.KonachanParser();
+                    break;
+            }
+            this.doc = doc;
+        }
+        get images() {
+            if (this._imageCahce.length === 0) {
+                this._imageCahce = this.fetishDocumentParser.parse(this.doc);
+                return this._imageCahce;
+            }
+            return this._imageCahce;
+        }
+    }
+    var FetishSiteFactory;
+    (function (FetishSiteFactory) {
+        function getSite(doc) {
+            switch (doc.location.hostname) {
+                case "konachan.net":
+                    return new KonaChan(doc);
+                default:
+                    throw new Error(`Unable to find a Site for ${doc.location.hostname}`);
+            }
+        }
+        FetishSiteFactory.getSite = getSite;
+    })(FetishSiteFactory = exports.FetishSiteFactory || (exports.FetishSiteFactory = {}));
+}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ "./src/IFetishSite.ts":
+/*!****************************!*\
+  !*** ./src/IFetishSite.ts ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var SITES;
+    (function (SITES) {
+        SITES[SITES["KONACHAN"] = 0] = "KONACHAN";
+    })(SITES = exports.SITES || (exports.SITES = {}));
+}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
 /***/ "./src/Main.ts":
 /*!*********************!*\
   !*** ./src/Main.ts ***!
@@ -963,15 +1155,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! Parser */ "./src/Parser.ts"), __webpack_require__(/*! Utils */ "./src/Utils.ts"), __webpack_require__(/*! JSZip */ "JSZip")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, Parser_1, Utils_1, JSZip) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! Utils */ "./src/Utils.ts"), __webpack_require__(/*! JSZip */ "JSZip"), __webpack_require__(/*! ./FetishSite */ "./src/FetishSite.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, Utils_1, JSZip, FetishSite_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    class Main {
-        constructor() {
-            throw new TypeError();
-        }
-        static doDownload(files, title) {
-            Main.setLabel("compressing");
+    var Main;
+    (function (Main) {
+        let _isInit = false;
+        let _images = [];
+        function doDownloadZip(files, title) {
+            setLabel("compressing");
             let zip = new JSZip();
             for (let img of files) {
                 zip.file(img.title, img.image);
@@ -984,14 +1176,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                     title = `${Utils_1.QueryString.tags} (${title})`;
                 }
                 saveAs(blob, title + ".zip");
-                Main.setLabel();
+                setLabel();
             });
         }
-        static setLabel(str = "Download all your fetishes") {
+        function setLabel(str = "Download all your fetishes") {
             document.getElementById("fetishAnchor").innerText = str;
         }
-        static init() {
-            if (Main._isInit) {
+        Main.setLabel = setLabel;
+        function init() {
+            if (_isInit) {
                 return;
             }
             buildUI();
@@ -1008,212 +1201,97 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                     ulSideBar.appendChild(node);
                 }
                 buildAnchor();
-                Main.setLabel();
+                setLabel();
                 let idDownloading = false;
                 document.getElementById("fetishAnchor").addEventListener("click", async (e) => {
                     if (idDownloading) {
                         return;
                     }
-                    if (Main._isInit) {
-                        Main.doDownload(Main._images);
+                    if (_isInit) {
+                        doDownloadZip(_images);
+                        return;
                     }
-                    else {
-                        idDownloading = true;
-                        Main.setLabel("Parsing pages... Please wait");
-                        Main._images = Main._images.concat(Parser_1.Parser.parse(document.getElementById("post-list-posts")));
-                        let allPages = document.querySelectorAll("#paginator a:not(.next_page)");
-                        let arrOfPageA = Array.from(allPages);
-                        let firstPage = arrOfPageA[0];
-                        let lastPage = arrOfPageA[arrOfPageA.length - 1];
-                        let firstPageNumber = Number.parseInt(firstPage.text);
-                        let lastPageNumber = Number.parseInt(lastPage.text);
-                        let rangeBetween = Utils_1.MathUtil.range(firstPageNumber, lastPageNumber);
-                        let baseUrl = window.location.href;
-                        let urls = [];
-                        let currentPage = Utils_1.QueryString.page === undefined ? 1 : Utils_1.QueryString.page;
-                        for (let i = 0; i < rangeBetween.length; i++) {
-                            let num = String(rangeBetween[i]);
-                            if (num == currentPage) {
-                                continue;
-                            }
-                            let newUrl = Utils_1.AjaxUtils.addParameter(baseUrl, "page", num.toString(), true);
-                            urls.push(newUrl);
-                        }
-                        async function delay(ms) {
-                            return new Promise((resolve) => {
-                                setTimeout(resolve, ms);
-                            });
-                        }
-                        let batchLimit = 1000;
-                        async function doDownload(images) {
-                            let failedImages = [];
-                            for (let im of images) {
-                                if (!im.isInit) {
-                                    try {
-                                        count++;
-                                        await delay(50);
-                                        await im.loadImage();
-                                        Main.setLabel(`${count} out of ${images.length} done`);
-                                        if (isBatch) {
-                                            batch.push(im);
-                                            if (count % batchLimit === 0) {
-                                                let rounded = Math.round(count / batchLimit) * batchLimit;
-                                                let batchNum = rounded.toString()[0];
-                                                let of = Math.floor(Math.round(images.length / batchLimit) * batchLimit);
-                                                let ofStr = of.toString()[0];
-                                                if (images.length % batchLimit !== 0 && images.length % batchLimit > batchLimit) {
-                                                    ofStr = String(parseInt(ofStr) + 1);
-                                                }
-                                                await Main.doDownload(batch, `${batchNum} of ${ofStr}`);
-                                                for (let i = 0; i < batch.length; i++) {
-                                                    batch[i].unloadImage();
-                                                }
-                                                batch = [];
-                                            }
-                                        }
-                                    }
-                                    catch (e) {
-                                        failedImages.push(im);
-                                        await delay(4000);
-                                    }
-                                }
-                            }
-                            if (failedImages.length > 0) {
-                                count = 0;
-                                Main.setLabel("Re-retrying failed images...");
-                                await doDownload(failedImages);
-                                failedImages = [];
-                            }
-                        }
-                        let count = 0;
-                        let failedPages = [];
-                        for (let url of urls) {
-                            count++;
-                            try {
-                                const response = await fetch(url);
-                                const html = await response.text();
-                                let parser = new DOMParser();
-                                let doc = parser.parseFromString(html, "text/html");
-                                let d = doc.getElementById("post-list-posts");
-                                Main._images = Main._images.concat(Parser_1.Parser.parse(d));
-                                let percent = Math.floor(100 * count / urls.length);
-                                Main.setLabel(`Parsing pages ${percent.toString()}% done`);
-                            }
-                            catch (e) {
-                                failedPages.push(url);
-                            }
-                        }
-                        if (Main._images.length > 100) {
-                            let f = confirm(`Warning, you are about to mass download ${Main._images.length} images, this can cause issues; your browser running out of memory, or konachan going down as Cloudflare might think this is a DOS attack. \nThere is no guarantee that all images will be downloaded without error, continue?`);
-                            if (!f) {
-                                Main.setLabel();
-                                idDownloading = false;
-                                return;
-                            }
-                        }
-                        if (failedPages.length > 0) {
-                            alert(`Failed to download pictures from ${failedPages}`);
-                        }
-                        count = 0;
-                        let isBatch = Main._images.length > batchLimit;
-                        let batch = [];
-                        await doDownload(Main._images);
-                        /*for (let im of Main._images) {
+                    idDownloading = true;
+                    setLabel("Parsing pages... Please wait");
+                    let site = FetishSite_1.FetishSiteFactory.getSite(window.document);
+                    let pages = await site.pages;
+                    for (let page of pages) {
+                        _images = _images.concat(page.images);
+                    }
+                    async function delay(ms) {
+                        return new Promise((resolve) => {
+                            setTimeout(resolve, ms);
+                        });
+                    }
+                    let batchLimit = 1000;
+                    async function doDownload(images) {
+                        let failedImages = [];
+                        for (let im of images) {
                             if (!im.isInit) {
                                 try {
                                     count++;
                                     await delay(50);
                                     await im.loadImage();
-                                    Main.setLabel(`${count} out of ${Main._images.length} done`);
+                                    setLabel(`${count} out of ${images.length} done`);
                                     if (isBatch) {
                                         batch.push(im);
                                         if (count % batchLimit === 0) {
-                                            let rounded: number = Math.round(count / batchLimit) * batchLimit;
-                                            let batchNum: string = rounded.toString()[0];
-                                            let of: number = Math.floor(Math.round(Main._images.length / batchLimit) * batchLimit);
-                                            let ofStr: string = of.toString()[0];
-                                            if (Main._images.length % batchLimit !== 0 && Main._images.length % batchLimit > batchLimit) {
+                                            let rounded = Math.round(count / batchLimit) * batchLimit;
+                                            let batchNum = rounded.toString()[0];
+                                            let of = Math.floor(Math.round(images.length / batchLimit) * batchLimit);
+                                            let ofStr = of.toString()[0];
+                                            if (images.length % batchLimit !== 0 && images.length % batchLimit > batchLimit) {
                                                 ofStr = String(parseInt(ofStr) + 1);
                                             }
-                                            await Main.doDownload(batch, `${batchNum} of ${ofStr}`);
-                                            for (let i: number = 0; i < batch.length; i++) {
+                                            await doDownloadZip(batch, `${batchNum} of ${ofStr}`);
+                                            for (let i = 0; i < batch.length; i++) {
                                                 batch[i].unloadImage();
                                             }
                                             batch = [];
                                         }
                                     }
-                                } catch (e) {
+                                }
+                                catch (e) {
                                     failedImages.push(im);
                                     await delay(4000);
                                 }
                             }
-                        }*/
-                        if (isBatch && batch.length > 0) {
-                            // download the rest of the batch
-                            await Main.doDownload(batch, "final");
-                            // inti is not true, as batches remove images as they are downloaded
                         }
-                        else {
-                            await Main.doDownload(Main._images);
-                            Main._isInit = true;
+                        if (failedImages.length > 0) {
+                            count = 0;
+                            setLabel("Re-retrying failed images...");
+                            await doDownload(failedImages);
+                            failedImages = [];
                         }
-                        idDownloading = false;
                     }
+                    if (_images.length > 100) {
+                        let f = confirm(`Warning, you are about to mass download ${_images.length} images, this can cause issues; your browser running out of memory, or konachan going down as Cloudflare might think this is a DOS attack. \nThere is no guarantee that all images will be downloaded without error, continue?`);
+                        if (!f) {
+                            setLabel();
+                            idDownloading = false;
+                            return;
+                        }
+                    }
+                    let count = 0;
+                    let isBatch = _images.length > batchLimit;
+                    let batch = [];
+                    await doDownload(_images);
+                    if (isBatch && batch.length > 0) {
+                        // download the rest of the batch
+                        await doDownloadZip(batch, "final");
+                        // inti is not true, as batches remove images as they are downloaded
+                    }
+                    else {
+                        await doDownloadZip(_images);
+                        _isInit = true;
+                    }
+                    idDownloading = false;
                 });
             }
         }
-    }
-    exports.Main = Main;
-    Main._isInit = false;
-    Main._images = [];
+        Main.init = init;
+    })(Main = exports.Main || (exports.Main = {}));
     Main.init();
-}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ }),
-
-/***/ "./src/Parser.ts":
-/*!***********************!*\
-  !*** ./src/Parser.ts ***!
-  \***********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! FetishImage */ "./src/FetishImage.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, FetishImage_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    class Parser {
-        static parse(postList) {
-            let childrenLi = postList.childNodes;
-            let retArr = [];
-            for (let i = 0; i < childrenLi.length; i++) {
-                let e = childrenLi[i];
-                if (e.nodeType == Node.ELEMENT_NODE) {
-                    let containerInfo = Parser._parseContainer(e);
-                    retArr.push(new FetishImage_1.FetishImage(containerInfo));
-                }
-            }
-            return retArr;
-        }
-        static _parseContainer(el) {
-            let url;
-            let res;
-            let title;
-            let tagForTitle = el.getElementsByClassName("inner")[0];
-            let aNameTag = tagForTitle.firstChild;
-            let infoTag = el.getElementsByClassName("directlink")[0];
-            url = infoTag.href;
-            res = infoTag.getElementsByClassName("directlink-res")[0].innerHTML;
-            title = `${aNameTag.href.substr(aNameTag.href.lastIndexOf('/') + 1)}.${url.split(".").pop()}`;
-            return {
-                url: url,
-                res: res,
-                title: title
-            };
-        }
-    }
-    exports.Parser = Parser;
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
@@ -1300,34 +1378,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                 newQueryString += parameterName + "=" + (parameterValue ? parameterValue : '');
             }
             return urlParts[0] + newQueryString + urlhash;
-        }
-        static loadXHR(url) {
-            return new Promise((resolve, reject) => {
-                try {
-                    let xhr = new XMLHttpRequest();
-                    xhr.open("GET", url);
-                    xhr.responseType = "blob";
-                    xhr.timeout = 20000;
-                    xhr.onerror = () => {
-                        reject("Network error.");
-                    };
-                    xhr.onload = () => {
-                        if (xhr.status === 200) {
-                            resolve(xhr.response);
-                        }
-                        else {
-                            reject("Loading error:" + xhr.statusText);
-                        }
-                    };
-                    xhr.ontimeout = () => {
-                        reject("Network error.");
-                    };
-                    xhr.send();
-                }
-                catch (err) {
-                    reject(err.message);
-                }
-            });
         }
         static downloadViaJavaScript(url, data, fileName, mediaType, type) {
             return new Promise((resolve, reject) => {

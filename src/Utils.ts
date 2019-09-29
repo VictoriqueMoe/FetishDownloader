@@ -69,33 +69,6 @@ export class AjaxUtils {
         return urlParts[0] + newQueryString + urlhash;
     }
 
-    public static loadXHR(url: string): Promise<Blob> {
-        return new Promise((resolve, reject) => {
-            try {
-                let xhr: XMLHttpRequest = new XMLHttpRequest();
-                xhr.open("GET", url);
-                xhr.responseType = "blob";
-                xhr.timeout = 20000;
-                xhr.onerror = () => {
-                    reject("Network error.");
-                };
-                xhr.onload = () => {
-                    if (xhr.status === 200) {
-                        resolve(xhr.response);
-                    } else {
-                        reject("Loading error:" + xhr.statusText);
-                    }
-                };
-                xhr.ontimeout = () => {
-                    reject("Network error.");
-                };
-                xhr.send();
-            } catch (err) {
-                reject(err.message);
-            }
-        });
-    }
-
     public static downloadViaJavaScript(url: string, data: any, fileName?: string, mediaType?: string, type?: HTTP_METHOD): Promise<void> {
         return new Promise((resolve, reject) => {
             if (!type) {

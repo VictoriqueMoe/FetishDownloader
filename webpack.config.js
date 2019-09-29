@@ -32,7 +32,7 @@ module.exports = env => {
         },
         plugins: [
             new CircularDependencyPlugin({
-                failOnError: true,
+                failOnError: false,
                 cwd: process.cwd(),
             }),
             new CheckerPlugin(),

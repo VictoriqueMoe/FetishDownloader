@@ -1,20 +1,23 @@
 import {FetishImage} from "FetishImage";
 import {ImageContainerTyping} from "Typings";
-export class Parser {
-    public static parse(postList: HTMLUListElement): FetishImage[] {
-        let childrenLi: NodeListOf<HTMLLIElement> = postList.childNodes as NodeListOf<HTMLLIElement>;
+import {IFetishDocumentParser} from "./IFetishDocumentParser";
+
+export class KonachanParser implements IFetishDocumentParser {
+    public parse(doc: HTMLDocument): FetishImage[] {
+        let list = doc.getElementById("post-list-posts");
+        let childrenLi: NodeListOf<HTMLLIElement> = list.childNodes as NodeListOf<HTMLLIElement>;
         let retArr: FetishImage[] = [];
-        for(let i:number = 0; i < childrenLi.length; i++){
-            let e:HTMLLIElement = childrenLi[i];
+        for (let i: number = 0; i < childrenLi.length; i++) {
+            let e: HTMLLIElement = childrenLi[i];
             if (e.nodeType == Node.ELEMENT_NODE) {
-                let containerInfo:ImageContainerTyping = Parser._parseContainer(e);
+                let containerInfo: ImageContainerTyping = this._parseContainer(e);
                 retArr.push(new FetishImage(containerInfo));
             }
         }
         return retArr;
     }
 
-    private static _parseContainer(el: HTMLLIElement): ImageContainerTyping {
+    private _parseContainer(el: HTMLLIElement): ImageContainerTyping {
         let url: string;
         let res: string;
         let title: string;

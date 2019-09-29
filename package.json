@@ -1,11 +1,15 @@
 {
   "name": "fetishdownloader",
-  "version": "1.0.0",
+  "private": true,
+  "version": "2.0.0",
   "description": "Download all your lovely fetishes (no furries)",
-  "main": "main.ts",
+  "main": "./dist/fetishDownloader.user.js",
+  "types": "./lib/Main.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
-    "compileDevlopment": "webpack --env development",
-    "compileProduction": "webpack --env production"
+    "compile": "webpack --env development"
   },
   "repository": {
     "type": "git",
