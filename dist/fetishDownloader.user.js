@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Fetish Downloader
 // @namespace    victorique.moe
-// @version      1.0.1
+// @version      2.0.0
 // @description  Download all your lovely fetishes (no furries)
 // @author       Victorique
 // @match        https://konachan.net/post?*
@@ -14,14 +14,14 @@
 // ==/UserScript==
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("JSZip"), require("file-saver"));
+		module.exports = factory(require("JSZip"));
 	else if(typeof define === 'function' && define.amd)
-		define(["JSZip", "file-saver"], factory);
+		define(["JSZip"], factory);
 	else if(typeof exports === 'object')
-		exports["Fetish"] = factory(require("JSZip"), require("file-saver"));
+		exports["Fetish"] = factory(require("JSZip"));
 	else
-		root["Fetish"] = factory(root["JSZip"], root["file-saver"]);
-})(window, function(__WEBPACK_EXTERNAL_MODULE_JSZip__, __WEBPACK_EXTERNAL_MODULE_file_saver__) {
+		root["Fetish"] = factory(root["JSZip"]);
+})(window, function(__WEBPACK_EXTERNAL_MODULE_JSZip__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -936,7 +936,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! js-sha256 */ "./node_modules/js-sha256/src/sha256.js")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, js_sha256_1) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! Utils */ "./src/Utils.ts"), __webpack_require__(/*! js-sha256 */ "./node_modules/js-sha256/src/sha256.js")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, Utils_1, js_sha256_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class FetishImage {
@@ -980,34 +980,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             if (this._isInit) {
                 return Promise.resolve();
             }
-            const FETCH_TIMEOUT = 2000;
-            let didTimeOut = false;
-            return new Promise((resolve, reject) => {
-                const timeout = setTimeout(() => {
-                    didTimeOut = true;
-                    reject(new Error('Request timed out'));
-                }, FETCH_TIMEOUT);
-                fetch(this._url).then(response => {
-                    // Clear the timeout as cleanup
-                    clearTimeout(timeout);
-                    if (!didTimeOut) {
-                        if (!response.ok) {
-                            reject("unable to load");
-                            return;
-                        }
-                        resolve(response.blob());
-                    }
-                }).catch(err => {
-                    if (didTimeOut) {
-                        return;
-                    }
-                    reject(err);
-                });
-            }).then(image => {
-                if (image.size === 0) {
-                    throw new Error("unable to load");
-                }
+            return Utils_1.AjaxUtils.loadXHR(this.url).then(image => {
                 this._actualImage = image;
+                // Konachan has a thing about setting files with the same name, but not the same actual image, this will append a hash of the image as the file name, thus, removing duplicated files, and if there is a file with the same name that is really a dupe, then when you extract it, it will have the same hash
                 let reader = new FileReader();
                 reader.readAsBinaryString(image);
                 return getResult(reader);
@@ -1305,7 +1280,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! file-saver */ "file-saver")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, FileSaver) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var HTTP_METHOD;
@@ -1379,59 +1354,31 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             }
             return urlParts[0] + newQueryString + urlhash;
         }
-        static downloadViaJavaScript(url, data, fileName, mediaType, type) {
+        static loadXHR(url) {
             return new Promise((resolve, reject) => {
-                if (!type) {
-                    type = HTTP_METHOD.POST;
-                }
-                //  let blob:Blob = await AjaxUtils.makeRequest(type, url, dataMap, null, "blob") as Blob;
-                let xhr = new XMLHttpRequest();
-                xhr.open(type, url);
-                xhr.responseType = "blob";
-                xhr.withCredentials = true;
-                if (type === HTTP_METHOD.POST) {
-                    xhr.setRequestHeader("Content-type", "application/json");
-                }
-                let hasError = false;
-                xhr.onreadystatechange = () => {
-                    let error = null;
-                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                        if (hasError) {
-                            if (xhr.response) {
-                                error = xhr.response;
-                            }
-                            else {
-                                error = "internal server error";
-                            }
-                            reject(error);
-                        }
-                        let fileName;
-                        let contentDispositionHeader = xhr.getResponseHeader("Content-Disposition");
-                        if (contentDispositionHeader && contentDispositionHeader.indexOf("filename") > -1) {
-                            fileName = contentDispositionHeader.split("filename").pop();
-                            fileName = fileName.replace("=", "");
-                            fileName = fileName.trim();
-                            fileName = fileName.replace(/"/g, "");
+                try {
+                    let xhr = new XMLHttpRequest();
+                    xhr.open("GET", url);
+                    xhr.responseType = "blob";
+                    xhr.timeout = 20000;
+                    xhr.onerror = () => {
+                        reject("Network error.");
+                    };
+                    xhr.onload = () => {
+                        if (xhr.status === 200) {
+                            resolve(xhr.response);
                         }
                         else {
-                            fileName = "untitled.txt";
+                            reject("Loading error:" + xhr.statusText);
                         }
-                        let blob = xhr.response;
-                        FileSaver.saveAs(blob, fileName, true);
-                        resolve();
-                    }
-                    else if (xhr.readyState === XMLHttpRequest.HEADERS_RECEIVED) {
-                        if (xhr.status !== 200) {
-                            xhr.responseType = "text";
-                            hasError = true;
-                        }
-                    }
-                };
-                if (type === "POST") {
-                    xhr.send(JSON.stringify(data));
-                }
-                else {
+                    };
+                    xhr.ontimeout = () => {
+                        reject("Network error.");
+                    };
                     xhr.send();
+                }
+                catch (err) {
+                    reject(err.message);
                 }
             });
         }
@@ -1458,17 +1405,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 /***/ (function(module, exports) {
 
 module.exports = __WEBPACK_EXTERNAL_MODULE_JSZip__;
-
-/***/ }),
-
-/***/ "file-saver":
-/*!*****************************!*\
-  !*** external "file-saver" ***!
-  \*****************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_file_saver__;
 
 /***/ })
 

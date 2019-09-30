@@ -46,54 +46,26 @@ export class FetishImage {
     }
 
     public loadImage(): Promise<void> {
-        function getResult(reader: FileReader): Promise<string | ArrayBuffer> {
+        function getResult(reader:FileReader):Promise<string | ArrayBuffer> {
             return new Promise((resolve, reject) => {
-                reader.onload = function (): void {
+                reader.onload = function():void {
                     resolve(this.result);
                 };
                 reader.onerror = reader.onabort = reject;
             });
         }
-
         if (this._isInit) {
             return Promise.resolve();
         }
-
-        const FETCH_TIMEOUT = 20000;
-        let didTimeOut = false;
-
-        return new Promise<Blob>((resolve, reject) => {
-            const timeout = setTimeout(() => {
-                didTimeOut = true;
-                reject(new Error('Request timed out'));
-            }, FETCH_TIMEOUT);
-            fetch(this._url).then(response => {
-                // Clear the timeout as cleanup
-                clearTimeout(timeout);
-                if (!didTimeOut) {
-                    if(!response.ok){
-                        reject("unable to load");
-                        return;
-                    }
-                    resolve(response.blob());
-                }
-            }).catch(err => {
-                if (didTimeOut) {
-                    return;
-                }
-                reject(err);
-            });
-        }).then(image => {
-            if(image.size === 0){
-                throw new Error("unable to load");
-            }
+        return AjaxUtils.loadXHR(this.url).then(image => {
             this._actualImage = image;
+            // Konachan has a thing about setting files with the same name, but not the same actual image, this will append a hash of the image as the file name, thus, removing duplicated files, and if there is a file with the same name that is really a dupe, then when you extract it, it will have the same hash
             let reader = new FileReader();
             reader.readAsBinaryString(image);
             return getResult(reader);
         }).then(value => {
             let hashofImage = sha256(value);
-            if (!this.title.includes(`_${hashofImage}`)) {
+            if(!this.title.includes(`_${hashofImage}`)){
                 let titleSplit = this.title.split(".");
                 let extension = titleSplit.pop();
                 this._title = `${titleSplit.join("")}_${hashofImage}.${extension}`;

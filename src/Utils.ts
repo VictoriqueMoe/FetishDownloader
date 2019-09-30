@@ -69,55 +69,29 @@ export class AjaxUtils {
         return urlParts[0] + newQueryString + urlhash;
     }
 
-    public static downloadViaJavaScript(url: string, data: any, fileName?: string, mediaType?: string, type?: HTTP_METHOD): Promise<void> {
+    public static loadXHR(url: string): Promise<Blob> {
         return new Promise((resolve, reject) => {
-            if (!type) {
-                type = HTTP_METHOD.POST;
-            }
-            //  let blob:Blob = await AjaxUtils.makeRequest(type, url, dataMap, null, "blob") as Blob;
-            let xhr: XMLHttpRequest = new XMLHttpRequest();
-            xhr.open(type, url);
-            xhr.responseType = "blob";
-            xhr.withCredentials = true;
-            if (type === HTTP_METHOD.POST) {
-                xhr.setRequestHeader("Content-type", "application/json");
-            }
-            let hasError: boolean = false;
-            xhr.onreadystatechange = (): void => {
-                let error: string = null;
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (hasError) {
-                        if (xhr.response) {
-                            error = xhr.response;
-                        } else {
-                            error = "internal server error";
-                        }
-                        reject(error);
-                    }
-                    let fileName: string;
-                    let contentDispositionHeader: string = xhr.getResponseHeader("Content-Disposition");
-                    if (contentDispositionHeader && contentDispositionHeader.indexOf("filename") > -1) {
-                        fileName = contentDispositionHeader.split("filename").pop();
-                        fileName = fileName.replace("=", "");
-                        fileName = fileName.trim();
-                        fileName = fileName.replace(/"/g, "");
+            try {
+                let xhr: XMLHttpRequest = new XMLHttpRequest();
+                xhr.open("GET", url);
+                xhr.responseType = "blob";
+                xhr.timeout = 20000;
+                xhr.onerror = () => {
+                    reject("Network error.");
+                };
+                xhr.onload = () => {
+                    if (xhr.status === 200) {
+                        resolve(xhr.response);
                     } else {
-                        fileName = "untitled.txt";
+                        reject("Loading error:" + xhr.statusText);
                     }
-                    let blob: Blob = xhr.response;
-                    FileSaver.saveAs(blob, fileName, true);
-                    resolve();
-                } else if (xhr.readyState === XMLHttpRequest.HEADERS_RECEIVED) {
-                    if (xhr.status !== 200) {
-                        xhr.responseType = "text";
-                        hasError = true;
-                    }
-                }
-            };
-            if (type === "POST") {
-                xhr.send(JSON.stringify(data));
-            } else {
+                };
+                xhr.ontimeout = () => {
+                    reject("Network error.");
+                };
                 xhr.send();
+            } catch (err) {
+                reject(err.message);
             }
         });
     }
