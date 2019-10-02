@@ -5,6 +5,7 @@
 // @description  Download all your lovely fetishes (no furries)
 // @author       Victorique
 // @match        https://konachan.net/post?*
+// @match        https://konachan.com/post?*
 // @grant        none
 // @run-at       document-idle
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js

@@ -1,15 +1,13 @@
 import {IFetishPage, IFetishSite, SITES} from "./IFetishSite";
 import {FetishImage} from "./FetishImage";
 import {IFetishDocumentParser} from "./IFetishDocumentParser";
-import {AjaxUtils, MathUtil, QueryString} from "./Utils";
+import {AjaxUtils, MathUtil, QueryString, SiteUtils} from "./Utils";
 import {Main} from "./Main";
-import {KonachanParser} from "./FetishDocumentParserFactory";
+import {KonachanParser} from "./FetishDocumentParser";
 
 abstract class FetishSite implements IFetishSite {
-    protected readonly doc: Document;
 
-    protected constructor(doc: Document) {
-        this.doc = doc;
+    public constructor(protected doc: Document) {
     }
 
     public abstract get pages(): Promise<IFetishPage[]>;
@@ -18,9 +16,6 @@ abstract class FetishSite implements IFetishSite {
 }
 
 class KonaChan extends FetishSite {
-    public constructor(doc: Document) {
-        super(doc);
-    }
 
     public get pages(): Promise<IFetishPage[]> {
         async function load(this: KonaChan, urls: string[]): Promise<IFetishPage[]> {
@@ -96,11 +91,9 @@ class FetishPage implements IFetishPage {
 
 export module FetishSiteFactory {
     export function getSite(doc: Document): IFetishSite {
-        switch (doc.location.hostname) {
-            case "konachan.net":
+        switch (SiteUtils.getSite(doc)) {
+            case SITES.KONACHAN:
                 return new KonaChan(doc);
-            default:
-                throw new Error(`Unable to find a Site for ${doc.location.hostname}`);
         }
     }
 }

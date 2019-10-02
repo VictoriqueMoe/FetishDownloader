@@ -5,6 +5,7 @@
 // @description  Download all your lovely fetishes (no furries)
 // @author       Victorique
 // @match        https://konachan.net/post?*
+// @match        https://konachan.com/post?*
 // @grant        none
 // @run-at       document-idle
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js
@@ -881,10 +882,10 @@ module.exports = g;
 
 /***/ }),
 
-/***/ "./src/FetishDocumentParserFactory.ts":
-/*!********************************************!*\
-  !*** ./src/FetishDocumentParserFactory.ts ***!
-  \********************************************/
+/***/ "./src/FetishDocumentParser.ts":
+/*!*************************************!*\
+  !*** ./src/FetishDocumentParser.ts ***!
+  \*************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -909,16 +910,29 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             let url;
             let res;
             let title;
+            let tags;
             let tagForTitle = el.getElementsByClassName("inner")[0];
             let aNameTag = tagForTitle.firstChild;
             let infoTag = el.getElementsByClassName("directlink")[0];
+            let tagInfo = aNameTag.firstChild;
             url = infoTag.href;
             res = infoTag.getElementsByClassName("directlink-res")[0].innerHTML;
             title = `${aNameTag.href.substr(aNameTag.href.lastIndexOf('/') + 1)}.${url.split(".").pop()}`;
+            let tagInfoString = tagInfo.title;
+            let strSplit = tagInfoString.split(" ");
+            let slice = strSplit.slice(strSplit.indexOf("Tags:") + 1);
+            if (slice.length === 0) {
+                tags = [];
+            }
+            else {
+                slice.splice(slice.indexOf(":") - 1);
+                tags = slice;
+            }
             return {
                 url: url,
                 res: res,
-                title: title
+                title: title,
+                tags: tags
             };
         }
     }
@@ -945,6 +959,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             this._title = container.title;
             this._url = container.url;
             this._isInit = false;
+            this._tags = container.tags;
         }
         get res() {
             return this._res;
@@ -963,6 +978,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                 throw new Error("Image has not been loaded yet");
             }
             return this._actualImage;
+        }
+        get tags() {
+            return this._tags;
         }
         unloadImage() {
             this._isInit = false;
@@ -1011,7 +1029,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ./IFetishSite */ "./src/IFetishSite.ts"), __webpack_require__(/*! ./Utils */ "./src/Utils.ts"), __webpack_require__(/*! ./Main */ "./src/Main.ts"), __webpack_require__(/*! ./FetishDocumentParserFactory */ "./src/FetishDocumentParserFactory.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, IFetishSite_1, Utils_1, Main_1, FetishDocumentParserFactory_1) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ./IFetishSite */ "./src/IFetishSite.ts"), __webpack_require__(/*! ./Utils */ "./src/Utils.ts"), __webpack_require__(/*! ./Main */ "./src/Main.ts"), __webpack_require__(/*! ./FetishDocumentParser */ "./src/FetishDocumentParser.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, IFetishSite_1, Utils_1, Main_1, FetishDocumentParser_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class FetishSite {
@@ -1020,9 +1038,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         }
     }
     class KonaChan extends FetishSite {
-        constructor(doc) {
-            super(doc);
-        }
         get pages() {
             async function load(urls) {
                 let count = 0;
@@ -1072,7 +1087,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             this._imageCahce = [];
             switch (site) {
                 case IFetishSite_1.SITES.KONACHAN:
-                    this.fetishDocumentParser = new FetishDocumentParserFactory_1.KonachanParser();
+                    this.fetishDocumentParser = new FetishDocumentParser_1.KonachanParser();
                     break;
             }
             this.doc = doc;
@@ -1088,11 +1103,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     var FetishSiteFactory;
     (function (FetishSiteFactory) {
         function getSite(doc) {
-            switch (doc.location.hostname) {
-                case "konachan.net":
+            switch (Utils_1.SiteUtils.getSite(doc)) {
+                case IFetishSite_1.SITES.KONACHAN:
                     return new KonaChan(doc);
-                default:
-                    throw new Error(`Unable to find a Site for ${doc.location.hostname}`);
             }
         }
         FetishSiteFactory.getSite = getSite;
@@ -1115,7 +1128,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     Object.defineProperty(exports, "__esModule", { value: true });
     var SITES;
     (function (SITES) {
-        SITES[SITES["KONACHAN"] = 0] = "KONACHAN";
+        SITES["KONACHAN"] = "konachan";
     })(SITES = exports.SITES || (exports.SITES = {}));
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -1130,7 +1143,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! Utils */ "./src/Utils.ts"), __webpack_require__(/*! JSZip */ "JSZip"), __webpack_require__(/*! ./FetishSite */ "./src/FetishSite.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, Utils_1, JSZip, FetishSite_1) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! Utils */ "./src/Utils.ts"), __webpack_require__(/*! JSZip */ "JSZip"), __webpack_require__(/*! ./FetishSite */ "./src/FetishSite.ts"), __webpack_require__(/*! ./UI */ "./src/UI.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, Utils_1, JSZip, FetishSite_1, UI_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Main;
@@ -1141,6 +1154,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             setLabel("compressing");
             let zip = new JSZip();
             for (let img of files) {
+                console.log(`${img.title} has tags: ${img.tags}`);
                 zip.file(img.title, img.image);
             }
             return zip.generateAsync({ type: "blob" }).then(function (blob) {
@@ -1164,21 +1178,16 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             }
             buildUI();
             function buildUI() {
-                function buildAnchor() {
-                    let ulSideBar = document.getElementById("subnavbar");
-                    let node = document.createElement("LI");
-                    let textnode = document.createTextNode("");
-                    let aTag = document.createElement("a");
-                    aTag.id = "fetishAnchor";
-                    aTag.appendChild(textnode);
-                    aTag.href = "#";
-                    node.appendChild(aTag);
-                    ulSideBar.appendChild(node);
+                function displayOptions(bool) {
+                    let opParent = document.getElementById("fetishDownloadOptions").parentElement;
+                    opParent.style.display = bool ? "inline" : "none";
                 }
-                buildAnchor();
+                let uiMaker = UI_1.UIFactory.getUI(document);
+                uiMaker.createUI();
                 setLabel();
                 let idDownloading = false;
-                document.getElementById("fetishAnchor").addEventListener("click", async (e) => {
+                let anchor = document.getElementById("fetishAnchor");
+                anchor.addEventListener("click", async (e) => {
                     if (idDownloading) {
                         return;
                     }
@@ -1186,6 +1195,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                         doDownloadZip(_images);
                         return;
                     }
+                    let options = document.getElementById("fetishDownloadOptions");
+                    displayOptions(false);
                     idDownloading = true;
                     setLabel("Parsing pages... Please wait");
                     let site = FetishSite_1.FetishSiteFactory.getSite(window.document);
@@ -1198,7 +1209,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                             setTimeout(resolve, ms);
                         });
                     }
-                    let batchLimit = 1000;
+                    let batchLimit = 250;
+                    let count = 0;
+                    let isBatch = _images.length > batchLimit;
+                    let batch = [];
                     async function doDownload(images) {
                         let failedImages = [];
                         for (let im of images) {
@@ -1239,34 +1253,112 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                             failedImages = [];
                         }
                     }
-                    if (_images.length > 100) {
-                        let f = confirm(`Warning, you are about to mass download ${_images.length} images, this can cause issues; your browser running out of memory, or konachan going down as Cloudflare might think this is a DOS attack. \nThere is no guarantee that all images will be downloaded without error, continue?`);
-                        if (!f) {
-                            setLabel();
-                            idDownloading = false;
+                    setLabel(`Click to download ${_images.length} images`);
+                    let inEvent = false;
+                    let downloadOptionsCallBack = () => {
+                        alert("download options");
+                    };
+                    options.addEventListener("click", downloadOptionsCallBack);
+                    displayOptions(true);
+                    let clickDownloadCallBack = async () => {
+                        displayOptions(false);
+                        if (inEvent) {
                             return;
                         }
-                    }
-                    let count = 0;
-                    let isBatch = _images.length > batchLimit;
-                    let batch = [];
-                    await doDownload(_images);
-                    if (isBatch && batch.length > 0) {
-                        // download the rest of the batch
-                        await doDownloadZip(batch, "final");
-                        // inti is not true, as batches remove images as they are downloaded
-                    }
-                    else {
-                        await doDownloadZip(_images);
-                        _isInit = true;
-                    }
-                    idDownloading = false;
+                        try {
+                            inEvent = true;
+                            await doDownload(_images);
+                            if (isBatch && batch.length > 0) {
+                                // download the rest of the batch
+                                await doDownloadZip(batch, "final");
+                                // inti is not true, as batches remove images as they are downloaded
+                            }
+                            else {
+                                await doDownloadZip(_images);
+                                _isInit = true;
+                            }
+                        }
+                        finally {
+                            anchor.removeEventListener("click", clickDownloadCallBack);
+                            options.removeEventListener("click", downloadOptionsCallBack);
+                            inEvent = false;
+                            idDownloading = false;
+                        }
+                    };
+                    anchor.addEventListener("click", clickDownloadCallBack);
                 });
             }
         }
         Main.init = init;
     })(Main = exports.Main || (exports.Main = {}));
     Main.init();
+}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ "./src/UI.ts":
+/*!*******************!*\
+  !*** ./src/UI.ts ***!
+  \*******************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ./Utils */ "./src/Utils.ts"), __webpack_require__(/*! ./IFetishSite */ "./src/IFetishSite.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, Utils_1, IFetishSite_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var UIFactory;
+    (function (UIFactory) {
+        function getUI(doc) {
+            switch (Utils_1.SiteUtils.getSite(doc)) {
+                case IFetishSite_1.SITES.KONACHAN:
+                    return new KonaChanUi(doc);
+            }
+        }
+        UIFactory.getUI = getUI;
+    })(UIFactory = exports.UIFactory || (exports.UIFactory = {}));
+    class AbstractUI {
+        constructor(doc) {
+            this.doc = doc;
+        }
+    }
+    class KonaChanUi extends AbstractUI {
+        constructor() {
+            super(...arguments);
+            this.ulSideBar = this.doc.getElementById("subnavbar");
+        }
+        createLi() {
+            let node = this.doc.createElement("LI");
+            this.ulSideBar.appendChild(node);
+            return node;
+        }
+        createUI() {
+            function makeDoDownload() {
+                let node = this.createLi();
+                let textnode = this.doc.createTextNode("");
+                let aTag = this.doc.createElement("a");
+                aTag.id = "fetishAnchor";
+                aTag.appendChild(textnode);
+                aTag.href = "#";
+                node.appendChild(aTag);
+            }
+            function makeDownloadOptionsTag() {
+                let node = this.createLi();
+                node.style.display = "none";
+                let textnode = this.doc.createTextNode("Download Options");
+                let aTag = this.doc.createElement("a");
+                aTag.id = "fetishDownloadOptions";
+                aTag.appendChild(textnode);
+                aTag.href = "#";
+                aTag.innerText = "Download Options";
+                node.appendChild(aTag);
+            }
+            makeDoDownload.call(this);
+            makeDownloadOptionsTag.call(this);
+        }
+    }
+    exports.KonaChanUi = KonaChanUi;
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
@@ -1280,7 +1372,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ./IFetishSite */ "./src/IFetishSite.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, IFetishSite_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var HTTP_METHOD;
@@ -1384,6 +1476,33 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         }
     }
     exports.AjaxUtils = AjaxUtils;
+    class EnumEx {
+        static getNamesAndValues(e) {
+            return EnumEx.getNames(e).map(n => ({ name: n, value: e[n] }));
+        }
+        /**
+         * get the numValue associated with it's own key. if you want to get a TypeScript Enum based on an index you can use this
+         * @param e
+         * @param aName
+         * @returns {string|null}
+         */
+        static loopBack(e, aName) {
+            let keyValuePair = EnumEx.getNamesAndValues(e);
+            for (let i = 0; i < keyValuePair.length; i++) {
+                let obj = keyValuePair[i];
+                if (obj.name === aName) {
+                    return obj.name;
+                }
+            }
+            return null;
+        }
+        static getNames(e) {
+            return EnumEx.getObjValues(e).filter(v => typeof v === "string");
+        }
+        static getObjValues(e) {
+            return Object.keys(e).map(k => e[k]);
+        }
+    }
     class MathUtil {
         static range(start, end) {
             // @ts-ignore
@@ -1391,6 +1510,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         }
     }
     exports.MathUtil = MathUtil;
+    var SiteUtils;
+    (function (SiteUtils) {
+        function getSite(doc) {
+            let url = doc.location.hostname.split(".").shift();
+            return EnumEx.loopBack(IFetishSite_1.SITES, url);
+        }
+        SiteUtils.getSite = getSite;
+    })(SiteUtils = exports.SiteUtils || (exports.SiteUtils = {}));
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 

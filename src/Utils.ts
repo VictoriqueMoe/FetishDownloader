@@ -1,4 +1,5 @@
 import * as FileSaver from "file-saver";
+import {SITES} from "./IFetishSite";
 
 export enum HTTP_METHOD {
     GET = "GET",
@@ -97,9 +98,46 @@ export class AjaxUtils {
     }
 }
 
+class EnumEx {
+    public static getNamesAndValues<T extends number>(e: any): Array<object> {
+        return EnumEx.getNames(e).map(n => ({name: n, value: e[n] as T}));
+    }
+    /**
+     * get the numValue associated with it's own key. if you want to get a TypeScript Enum based on an index you can use this
+     * @param e
+     * @param aName
+     * @returns {string|null}
+     */
+    public static loopBack<T>(e: any, aName: any): T {
+        let keyValuePair: Array<{ name: T, value: any }> = EnumEx.getNamesAndValues(e) as Array<{ name: T, value: any }>;
+        for (let i: number = 0; i < keyValuePair.length; i++) {
+            let obj: { name: T, value: any } = keyValuePair[i];
+            if (obj.name === aName) {
+                return obj.name;
+            }
+        }
+        return null;
+    }
+
+    public static getNames(e: any): Array<string> {
+        return EnumEx.getObjValues(e).filter(v => typeof v === "string") as string[];
+    }
+
+    private static getObjValues(e: any): Array<number | string> {
+        return Object.keys(e).map(k => e[k]);
+    }
+}
+
 export class MathUtil {
     public static range(start: number, end: number): Array<number> {
         // @ts-ignore
         return Array(end - start + 1).fill().map((_, idx) => start + idx);
+    }
+}
+
+export module SiteUtils{
+    export function getSite(doc: Document):SITES{
+        let url = doc.location.hostname.split(".").shift();
+        return EnumEx.loopBack(SITES, url);
     }
 }

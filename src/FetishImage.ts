@@ -8,12 +8,14 @@ export class FetishImage {
     private _title: string;
     private _isInit: boolean;
     private _actualImage: Blob;
+    private _tags:string[];
 
     constructor(container: ImageContainerTyping) {
         this._res = container.res;
         this._title = container.title;
         this._url = container.url;
         this._isInit = false;
+        this._tags = container.tags;
     }
 
     public get res(): string {
@@ -38,6 +40,10 @@ export class FetishImage {
             throw new Error("Image has not been loaded yet");
         }
         return this._actualImage;
+    }
+
+    public get tags():string[]{
+        return this._tags;
     }
 
     public unloadImage(): void {

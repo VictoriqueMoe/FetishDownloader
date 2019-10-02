@@ -21,18 +21,30 @@ export class KonachanParser implements IFetishDocumentParser {
         let url: string;
         let res: string;
         let title: string;
+        let tags: string[];
 
         let tagForTitle: HTMLDivElement = el.getElementsByClassName("inner")[0] as HTMLDivElement;
         let aNameTag: HTMLAnchorElement = tagForTitle.firstChild as HTMLAnchorElement;
         let infoTag: HTMLAnchorElement = el.getElementsByClassName("directlink")[0] as HTMLAnchorElement;
-
+        let tagInfo = aNameTag.firstChild as HTMLImageElement;
         url = infoTag.href;
         res = infoTag.getElementsByClassName("directlink-res")[0].innerHTML;
         title = `${aNameTag.href.substr(aNameTag.href.lastIndexOf('/') + 1)}.${url.split(".").pop()}`;
+
+        let tagInfoString = tagInfo.title;
+        let strSplit = tagInfoString.split(" ");
+        let slice = strSplit.slice(strSplit.indexOf("Tags:") + 1);
+        if (slice.length === 0) {
+            tags = [];
+        } else {
+            slice.splice(slice.indexOf(":") - 1);
+            tags = slice;
+        }
         return {
             url: url,
             res: res,
-            title: title
+            title: title,
+            tags: tags
         };
     }
 }

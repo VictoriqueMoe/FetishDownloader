@@ -2,6 +2,7 @@ import {FetishImage} from "FetishImage";
 import {QueryString} from "Utils";
 import * as JSZip from "JSZip";
 import {FetishSiteFactory} from "./FetishSite";
+import {UIFactory} from "./UI";
 
 export module Main {
     let _isInit: boolean = false;
@@ -11,6 +12,7 @@ export module Main {
         setLabel("compressing");
         let zip: JSZip = new JSZip();
         for (let img of files) {
+            console.log(`${img.title} has tags: ${img.tags}`);
             zip.file(img.title, img.image);
         }
         return zip.generateAsync({type: "blob"}).then(function (blob: Blob): void {
@@ -28,29 +30,23 @@ export module Main {
         document.getElementById("fetishAnchor").innerText = str;
     }
 
-    export function  init(): void {
+    export function init(): void {
         if (_isInit) {
             return;
         }
         buildUI();
 
         function buildUI(): void {
-            function buildAnchor(): void {
-                let ulSideBar: HTMLUListElement = document.getElementById("subnavbar") as HTMLUListElement;
-                let node: HTMLLIElement = document.createElement("LI") as HTMLLIElement;
-                let textnode: Text = document.createTextNode("");
-                let aTag: HTMLAnchorElement = document.createElement("a");
-                aTag.id = "fetishAnchor";
-                aTag.appendChild(textnode);
-                aTag.href = "#";
-                node.appendChild(aTag);
-                ulSideBar.appendChild(node);
+            function displayOptions(bool:boolean):void{
+                let opParent = document.getElementById("fetishDownloadOptions").parentElement;
+                opParent.style.display = bool ? "inline" : "none";
             }
-
-            buildAnchor();
+            let uiMaker = UIFactory.getUI(document);
+            uiMaker.createUI();
             setLabel();
             let idDownloading: boolean = false;
-            document.getElementById("fetishAnchor").addEventListener("click", async e => {
+            let anchor = document.getElementById("fetishAnchor");
+            anchor.addEventListener("click", async e => {
                 if (idDownloading) {
                     return;
                 }
@@ -58,22 +54,28 @@ export module Main {
                     doDownloadZip(_images);
                     return;
                 }
+                let options = document.getElementById("fetishDownloadOptions");
+                displayOptions(false);
                 idDownloading = true;
                 setLabel("Parsing pages... Please wait");
                 let site = FetishSiteFactory.getSite(window.document);
                 let pages = await site.pages;
-                for(let page of pages){
+                for (let page of pages) {
                     _images = _images.concat(page.images);
                 }
+
                 async function delay(ms: number): Promise<void> {
                     return new Promise((resolve) => {
                         setTimeout(resolve, ms);
                     });
                 }
 
-                let batchLimit: number = 1000;
+                let batchLimit: number = 250;
+                let count = 0;
+                let isBatch: boolean = _images.length > batchLimit;
+                let batch: FetishImage[] = [];
 
-                async function doDownload(images: FetishImage[]): Promise<void> {
+                async function loadImages(images: FetishImage[]): Promise<void> {
                     let failedImages: FetishImage[] = [];
                     for (let im of images) {
                         if (!im.isInit) {
@@ -108,32 +110,42 @@ export module Main {
                     if (failedImages.length > 0) {
                         count = 0;
                         setLabel("Re-retrying failed images...");
-                        await doDownload(failedImages);
+                        await loadImages(failedImages);
                         failedImages = [];
                     }
                 }
 
-                if (_images.length > 100) {
-                    let f: boolean = confirm(`Warning, you are about to mass download ${_images.length} images, this can cause issues; your browser running out of memory, or konachan going down as Cloudflare might think this is a DOS attack. \nThere is no guarantee that all images will be downloaded without error, continue?`);
-                    if (!f) {
-                        setLabel();
-                        idDownloading = false;
+                setLabel(`Click to download ${_images.length} images`);
+                let inEvent = false;
+                let downloadOptionsCallBack = () => {
+                    // make modal and process download options
+                };
+                options.addEventListener("click", downloadOptionsCallBack);
+                displayOptions(true);
+                let clickDownloadCallBack = async () => {
+                    displayOptions(false);
+                    if(inEvent){
                         return;
                     }
-                }
-                let count = 0;
-                let isBatch: boolean = _images.length > batchLimit;
-                let batch: FetishImage[] = [];
-                await doDownload(_images);
-                if (isBatch && batch.length > 0) {
-                    // download the rest of the batch
-                    await doDownloadZip(batch, "final");
-                    // inti is not true, as batches remove images as they are downloaded
-                } else {
-                    await doDownloadZip(_images);
-                    _isInit = true;
-                }
-                idDownloading = false;
+                    try {
+                        inEvent = true;
+                        await loadImages(_images);
+                        if (isBatch && batch.length > 0) {
+                            // download the rest of the batch
+                            await doDownloadZip(batch, "final");
+                            // init is not true, as batches remove images as they are downloaded
+                        } else {
+                            await doDownloadZip(_images);
+                            _isInit = true;
+                        }
+                    } finally {
+                        anchor.removeEventListener("click", clickDownloadCallBack);
+                        options.removeEventListener("click", downloadOptionsCallBack);
+                        inEvent = false;
+                        idDownloading = false;
+                    }
+                };
+                anchor.addEventListener("click", clickDownloadCallBack);
             });
         }
     }
