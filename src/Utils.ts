@@ -1,5 +1,5 @@
-import * as FileSaver from "file-saver";
 import {SITES} from "./IFetishSite";
+import "./css/modal.css";
 
 export enum HTTP_METHOD {
     GET = "GET",
@@ -70,11 +70,11 @@ export class AjaxUtils {
         return urlParts[0] + newQueryString + urlhash;
     }
 
-    public static loadXHR(url: string): Promise<Blob> {
+    public static loadImage(url: string): Promise<Blob> {
         return new Promise((resolve, reject) => {
             try {
                 let xhr: XMLHttpRequest = new XMLHttpRequest();
-                xhr.open("GET", url);
+                xhr.open(HTTP_METHOD.GET, url);
                 xhr.responseType = "blob";
                 xhr.timeout = 20000;
                 xhr.onerror = () => {
@@ -102,6 +102,7 @@ class EnumEx {
     public static getNamesAndValues<T extends number>(e: any): Array<object> {
         return EnumEx.getNames(e).map(n => ({name: n, value: e[n] as T}));
     }
+
     /**
      * get the numValue associated with it's own key. if you want to get a TypeScript Enum based on an index you can use this
      * @param e
@@ -135,9 +136,179 @@ export class MathUtil {
     }
 }
 
-export module SiteUtils{
-    export function getSite(doc: Document):SITES{
+export module SiteUtils {
+    export function getSite(doc: Document): SITES {
         let url = doc.location.hostname.split(".").shift();
         return EnumEx.loopBack(SITES, url);
+    }
+}
+
+export class DomUtil {
+    /**
+     * Create a modal with the given options
+     * @param options
+     */
+    public static createModal(options: ModalOptions): HTMLElement {
+        function getStyle(styleObj: { [style: string]: string }): string {
+            let styleStr = "";
+            if (styleObj) {
+                for (let key in styleObj) {
+                    if (styleObj.hasOwnProperty(key)) {
+                        styleStr += `${key}: ${styleObj[key]}; `;
+                    }
+                }
+            }
+            return styleStr;
+        }
+
+        let id = null;
+        if (ObjectUtil.validString(options.id)) {
+            id = options.id;
+        } else {
+            id = ObjectUtil.guid();
+        }
+
+        let bodyStyle = getStyle(options.modalContentStyle);
+        let styleStr = getStyle(options.modalBodyStyle);
+        let html = `<div class="FetishModal" id="${id}"> 
+                        <div class="FSmodalContent" style="${bodyStyle}"> 
+                            <div class="FSmodalHeader"> 
+                                <span class="FSclose">&times;</span> 
+                                <h5 class="FSmodalTitle">${options.title}</h5> 
+                            </div> 
+                            <div class="FSModalBody" style="${styleStr}">${options.body}</div>`;
+        if (ObjectUtil.validString(options.footer)) {
+            html += ` <div class="FSModalFooter"> 
+                         ${options.footer} 
+                       </div>`;
+        }
+        html += `</div></div>`;
+        let modal = DomUtil.createElementFromHTML(html);
+        window.onclick = (event: Event) => {
+            if (event.target == modal) {
+                DomUtil.closeModal(modal);
+            }
+        };
+        DomUtil.offOn(DomUtil.bySelector(".FSclose", modal), "click", e => {
+            DomUtil.closeModal(modal);
+        });
+
+        return modal;
+    }
+
+    private static bySelector(selector: string, el?: ParentNode): HTMLElement {
+        if (el) {
+            return el.querySelector(selector);
+        }
+        return document.querySelector(selector);
+    }
+
+    private static offOn(el: Element | string, event: string, callBack: (e?: Event) => void, fireImmediately: boolean = false): void {
+        if (!el) {
+            return;
+        }
+        let toTrigger: Element;
+        if (el instanceof Element) {
+            toTrigger = el;
+        } else {
+            toTrigger = document.querySelector(el);
+        }
+        if (!toTrigger) {
+            return;
+        }
+        toTrigger = DomUtil.off(toTrigger);
+        DomUtil.on(toTrigger, event, callBack, fireImmediately);
+    }
+
+    private static off(el: Element): Element {
+        if (!el) {
+            return;
+        }
+        let newEl: Node = el.cloneNode(false);
+        while (el.hasChildNodes()) {
+            newEl.appendChild(el.firstChild);
+        }
+        el.parentNode.replaceChild(newEl, el);
+        return newEl as Element;
+    }
+
+    private static on(el: Element | string, event: string, callBack: (e?: Event) => void, fireImmediately: boolean = false): void {
+        if (!el) {
+            return;
+        }
+        let toTrigger: Element;
+        if (el instanceof Element) {
+            toTrigger = el;
+        } else {
+            toTrigger = document.querySelector(el);
+        }
+        if (!toTrigger) {
+            return;
+        }
+        toTrigger.addEventListener(event, callBack);
+        if (fireImmediately) {
+            toTrigger.dispatchEvent(new Event(event));
+        }
+    }
+
+    public static openModal(modal: HTMLElement): void {
+        modal.style.display = "block";
+    }
+
+    public static createElementFromHTML(htmlString: string): HTMLElement {
+        let div = document.createElement('div');
+        div.innerHTML = htmlString.trim();
+        return div.firstChild as HTMLElement;
+    }
+
+    public static closeModal(modal: HTMLElement): void {
+        modal.style.display = "none";
+    }
+}
+
+export type ModalOptions = {
+    title: string,
+    body: string,
+    footer?: string,
+    modalBodyStyle?: { [style: string]: string },
+    modalContentStyle?: { [style: string]: string },
+    id?: string
+};
+
+export class ObjectUtil {
+    public static guid(): string {
+        function s4(): string {
+            return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+        }
+
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    public static validString(...strings: Array<unknown>): boolean {
+        if (strings.length === 0) {
+            return false;
+        }
+        for (let currString of strings) {
+            if (typeof currString !== "string") {
+                return false;
+            }
+            if (currString.length === 0) {
+                return false;
+            }
+            if (currString.trim().length === 0) {
+                return true;
+            }
+        }
+        return true;
+    }
+
+    public static removeObjectFromArray(itemToRemove: any, arr: any[]): void {
+        let arrLen = arr.length;
+        while (arrLen--) {
+            let currentItem: any = arr[arrLen];
+            if (itemToRemove === currentItem) {
+                arr.splice(arrLen, 1);
+            }
+        }
     }
 }

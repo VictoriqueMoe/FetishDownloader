@@ -1,0 +1,20 @@
+.badge {
+    display: inline-block;
+    min-width: 1em;
+    padding: .3em;
+    text-align: center;
+    background: #1779ba;
+    color: #fefefe;
+}
+
+.badge:not(:first-child) {
+    margin-left: 15px;
+}
+
+#excludeFilterSection{
+    margin-top: 10px;
+}
+
+.optionDelete{
+    cursor: pointer;
+}
