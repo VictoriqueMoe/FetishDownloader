@@ -1,6 +1,6 @@
-import {FetishImage} from "./FetishImage";
-import {Main} from "./Main";
-import {ObjectUtil} from "./Utils";
+import {FetishImage} from "../impl/FetishImage";
+import {Main} from "../../Main";
+import {ObjectUtil} from "../../utils/Utils";
 
 export module ImageLoader {
     export let isBatch: boolean;
@@ -33,11 +33,13 @@ export module ImageLoader {
                             batch.push(im);
                             if (count % batchLimit === 0) {
                                 batchNum++;
-                                let of: number = Math.floor(Math.round(images.length / batchLimit) * batchLimit);
-                                let ofStr: string = of.toString()[0];
-                                if (images.length % batchLimit !== 0 && images.length % batchLimit > batchLimit) {
-                                    ofStr = String(parseInt(ofStr) + 1);
+
+                                let ofString = Math.floor(Math.round(images.length / batchLimit));
+
+                                if(images.length % batchLimit != 0){
+                                    ofString++;
                                 }
+                                let ofStr: string = String(ofString);
                                 await Main.doDownloadZip(batch, `${batchNum} of ${ofStr}`);
                                 for (let i: number = 0; i < batch.length; i++) {
                                     batch[i].unloadImage();

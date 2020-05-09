@@ -1,5 +1,5 @@
-import {SITES} from "./IFetishSite";
-import "./css/modal.css";
+import {SITES} from "../site/IFetishSite";
+import "../css/modal.css";
 
 export enum HTTP_METHOD {
     GET = "GET",

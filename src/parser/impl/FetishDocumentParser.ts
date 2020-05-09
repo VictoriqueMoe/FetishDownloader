@@ -1,10 +1,13 @@
-import {FetishImage} from "FetishImage";
-import {ImageContainerTyping} from "Typings";
-import {IFetishDocumentParser} from "./IFetishDocumentParser";
+import {FetishImage} from "model/impl/FetishImage";
+import {ImageContainerTyping} from "model/Typings";
+import {IFetishDocumentParser} from "../IFetishDocumentParser";
 
 export class KonachanParser implements IFetishDocumentParser {
     public parse(doc: HTMLDocument): FetishImage[] {
         let list = doc.getElementById("post-list-posts");
+        if(list == null){
+            return [];
+        }
         let childrenLi: NodeListOf<HTMLLIElement> = list.childNodes as NodeListOf<HTMLLIElement>;
         let retArr: FetishImage[] = [];
         for (let i: number = 0; i < childrenLi.length; i++) {

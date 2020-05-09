@@ -1,22 +1,25 @@
-import {FetishImage} from "FetishImage";
-import {DomUtil, QueryString} from "Utils";
+import {FetishImage} from "model/impl/FetishImage";
+import {DomUtil, QueryString} from "utils/Utils";
 import * as JSZip from "JSZip";
-import {FetishSiteFactory} from "./FetishSite";
-import {UIFactory} from "./UI";
 import * as Awesomplete from "Awesomplete";
 import {Suggestion} from "awesomplete";
 import "awesomplete/awesomplete.base.css";
 import "awesomplete/awesomplete.css";
 import "awesomplete/awesomplete.theme.css";
-import {ImageLoader} from "./ImageLoader";
+import {ImageLoader} from "./model/modules/ImageLoader";
 import "css/custom.css";
+import {FetishSiteFactory} from "./factory/FetishSiteFactory";
+import {UIFactory} from "./factory/UIFactory";
 
 export module Main {
     let _isInit: boolean = false;
     let _images: FetishImage[] = [];
-    type FilterObject = {
-        excludeTags?: string[],
-    };
+    let _filtered: FetishImage[] = [];
+    // type FilterObject = {
+    //     excludeTags?: string[],
+    // };
+
+    type FilterObject = { [index: string]: string[] };
 
     export function doDownloadZip(files: FetishImage[], title?: string): Promise<void> {
         setLabel("compressing");
@@ -52,7 +55,7 @@ export module Main {
             }
 
             let uiMaker = UIFactory.getUI(document);
-            uiMaker.createUI();
+            uiMaker.buildUI();
             setLabel();
             let idDownloading: boolean = false;
             let anchor = document.getElementById("fetishAnchor");
@@ -61,9 +64,10 @@ export module Main {
                     return;
                 }
                 if (_isInit) {
-                    doDownloadZip(_images);
+                    doDownloadZip(_filtered);
                     return;
                 }
+                _images = [];
                 let options = document.getElementById("fetishDownloadOptions");
                 displayOptions(false);
                 idDownloading = true;
@@ -73,8 +77,8 @@ export module Main {
                 for (let page of pages) {
                     _images = _images.concat(page.images);
                 }
-
-                setLabel(`Click to download ${_images.length} images`);
+                _filtered = _images;
+                setLabel(`Click to download ${_filtered.length} images`);
                 let inEvent = false;
 
                 let awComp: Awesomplete;
@@ -105,7 +109,7 @@ export module Main {
                     let el: HTMLElement = document.body;
                     el.insertAdjacentElement("beforeend", modal);
                     modal.getElementsByClassName("fetishOptionsConfirm")[0].addEventListener("click", evt => {
-                        setLabel(`Click to download ${_images.length} images`);
+                        setLabel(`Click to download ${_filtered.length} images`);
                         let filters: FilterObject = {
                             excludeTags: []
                         };
@@ -124,7 +128,9 @@ export module Main {
                                     break;
                             }
                         });
-                        _images = filter(filters, _images);
+                        _filtered = filter(filters);
+                        setLabel(`Click to download ${_filtered.length} images`);
+                        DomUtil.closeModal(modal);
                     });
                 }
 
@@ -182,13 +188,14 @@ export module Main {
                     }
                     try {
                         inEvent = true;
-                        await ImageLoader.loadImages(_images, batchLimit);
+                        await ImageLoader.loadImages(_filtered, batchLimit);
+
                         if (ImageLoader.isBatch && ImageLoader.batch.length > 0) {
                             // download the rest of the batch
                             await doDownloadZip(ImageLoader.batch, "final");
                             // init is not true, as batches remove images as they are downloaded
                         } else {
-                            await doDownloadZip(_images);
+                            await doDownloadZip(_filtered);
                             _isInit = true;
                         }
                     } finally {
@@ -203,8 +210,24 @@ export module Main {
         }
     }
 
-    function filter(filterObject: FilterObject, image: FetishImage[]): FetishImage[] {
-        return [];
+    function filter(filterObject: FilterObject): FetishImage[] {
+        let newArray: FetishImage[] = [];
+
+        for (let image of _images) {
+            let tagsForImage = image.tags;
+            outer:
+                for (let filterType in filterObject) {
+                    let arrayOfSelectedTags = filterObject[filterType];
+                    for (let selectedTag of arrayOfSelectedTags) {
+                        if (tagsForImage.indexOf(selectedTag) > -1) {
+                            continue outer;
+                        }
+                    }
+                    newArray.push(image);
+                }
+        }
+
+        return newArray;
     }
 }
 

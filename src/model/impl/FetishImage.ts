@@ -1,5 +1,5 @@
-import {ImageContainerTyping} from "Typings";
-import {AjaxUtils} from "Utils";
+import {ImageContainerTyping} from "model/Typings";
+import {AjaxUtils} from "utils/Utils";
 import {sha256} from 'js-sha256';
 
 export class FetishImage {

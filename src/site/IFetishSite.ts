@@ -1,4 +1,4 @@
-import {FetishImage} from "./FetishImage";
+import {IFetishPage} from "../model/IFetishPage";
 
 export interface IFetishSite {
     readonly pages: Promise<IFetishPage[]>;
@@ -8,6 +8,3 @@ export enum SITES{
     KONACHAN= "konachan",
 }
 
-export interface IFetishPage {
-    readonly images: FetishImage[];
-}

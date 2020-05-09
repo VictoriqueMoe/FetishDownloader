@@ -1,4 +1,4 @@
-import {FetishImage} from "./FetishImage";
+import {FetishImage} from "../model/impl/FetishImage";
 
 export interface IFetishDocumentParser {
 

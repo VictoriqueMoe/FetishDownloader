@@ -1,21 +1,11 @@
-import {IFetishPage, IFetishSite, SITES} from "./IFetishSite";
-import {FetishImage} from "./FetishImage";
-import {IFetishDocumentParser} from "./IFetishDocumentParser";
-import {AjaxUtils, MathUtil, QueryString, SiteUtils} from "./Utils";
-import {Main} from "./Main";
-import {KonachanParser} from "./FetishDocumentParser";
+import {IFetishPage} from "../../model/IFetishPage";
+import {FetishPage} from "../../model/FetishPage";
+import {Main} from "../../Main";
+import {AjaxUtils, MathUtil, QueryString} from "../../utils/Utils";
+import {SITES} from "../IFetishSite";
+import {FetishSite} from "../FetishSite";
 
-abstract class FetishSite implements IFetishSite {
-
-    public constructor(protected doc: Document) {
-    }
-
-    public abstract get pages(): Promise<IFetishPage[]>;
-
-    public abstract get site(): SITES;
-}
-
-class KonaChan extends FetishSite {
+export class KonaChan extends FetishSite {
 
     public get pages(): Promise<IFetishPage[]> {
         async function load(this: KonaChan, urls: string[]): Promise<IFetishPage[]> {
@@ -62,38 +52,5 @@ class KonaChan extends FetishSite {
 
     public get site(): SITES {
         return SITES.KONACHAN;
-    }
-}
-
-
-class FetishPage implements IFetishPage {
-    protected fetishDocumentParser: IFetishDocumentParser;
-    private readonly doc: Document;
-    private _imageCahce: FetishImage[] = [];
-
-    public constructor(doc: Document, site: SITES) {
-        switch (site) {
-            case SITES.KONACHAN:
-                this.fetishDocumentParser = new KonachanParser();
-                break;
-        }
-        this.doc = doc;
-    }
-
-    public get images(): FetishImage[] {
-        if (this._imageCahce.length === 0) {
-            this._imageCahce = this.fetishDocumentParser.parse(this.doc);
-            return this._imageCahce;
-        }
-        return this._imageCahce;
-    }
-}
-
-export module FetishSiteFactory {
-    export function getSite(doc: Document): IFetishSite {
-        switch (SiteUtils.getSite(doc)) {
-            case SITES.KONACHAN:
-                return new KonaChan(doc);
-        }
     }
 }

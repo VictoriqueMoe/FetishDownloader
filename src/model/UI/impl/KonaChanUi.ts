@@ -1,31 +1,4 @@
-import {SiteUtils} from "./Utils";
-import {SITES} from "./IFetishSite";
-
-export interface UI {
-
-    /**
-     * Should create 2 elements with the id of:
-     * fetishAnchor - this will be the thing clicked to kick off the download
-     * fetishDownloadOptions - This will be used to call the Options for said download
-     */
-    createUI(): void;
-}
-
-export module UIFactory {
-    export function getUI(doc: Document): UI {
-        switch (SiteUtils.getSite(doc)) {
-            case SITES.KONACHAN:
-                return new KonaChanUi(doc);
-        }
-    }
-}
-
-abstract class AbstractUI implements UI {
-    public constructor(protected readonly doc: Document) {
-    }
-
-    public abstract createUI(): void;
-}
+import {AbstractUI} from "../AbstractUI";
 
 export class KonaChanUi extends AbstractUI {
     private ulSideBar: HTMLUListElement = this.doc.getElementById("subnavbar") as HTMLUListElement;
@@ -36,7 +9,7 @@ export class KonaChanUi extends AbstractUI {
         return node;
     }
 
-    public createUI(): void {
+    public buildUI(): void {
 
         function makeDoDownload(this: KonaChanUi): void {
             let node: HTMLLIElement = this.createLi();

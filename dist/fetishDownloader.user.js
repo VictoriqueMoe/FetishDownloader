@@ -681,23 +681,27 @@ return _;
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var content = __webpack_require__(/*! !../css-loader/dist/cjs.js!./awesomplete.base.css */ "./node_modules/css-loader/dist/cjs.js!./node_modules/awesomplete/awesomplete.base.css");
+var api = __webpack_require__(/*! ../style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../css-loader/dist/cjs.js!./awesomplete.base.css */ "./node_modules/css-loader/dist/cjs.js!./node_modules/awesomplete/awesomplete.base.css");
 
-if (typeof content === 'string') {
-  content = [[module.i, content, '']];
-}
+            content = content.__esModule ? content.default : content;
 
-var options = {}
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
 
 options.insert = "head";
 options.singleton = false;
 
-var update = __webpack_require__(/*! ../style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js")(content, options);
+var update = api(content, options);
 
-if (content.locals) {
-  module.exports = content.locals;
-}
+var exported = content.locals ? content.locals : {};
 
+
+
+module.exports = exported;
 
 /***/ }),
 
@@ -708,23 +712,27 @@ if (content.locals) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var content = __webpack_require__(/*! !../css-loader/dist/cjs.js!./awesomplete.css */ "./node_modules/css-loader/dist/cjs.js!./node_modules/awesomplete/awesomplete.css");
+var api = __webpack_require__(/*! ../style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../css-loader/dist/cjs.js!./awesomplete.css */ "./node_modules/css-loader/dist/cjs.js!./node_modules/awesomplete/awesomplete.css");
 
-if (typeof content === 'string') {
-  content = [[module.i, content, '']];
-}
+            content = content.__esModule ? content.default : content;
 
-var options = {}
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
 
 options.insert = "head";
 options.singleton = false;
 
-var update = __webpack_require__(/*! ../style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js")(content, options);
+var update = api(content, options);
 
-if (content.locals) {
-  module.exports = content.locals;
-}
+var exported = content.locals ? content.locals : {};
 
+
+
+module.exports = exported;
 
 /***/ }),
 
@@ -735,23 +743,27 @@ if (content.locals) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var content = __webpack_require__(/*! !../css-loader/dist/cjs.js!./awesomplete.theme.css */ "./node_modules/css-loader/dist/cjs.js!./node_modules/awesomplete/awesomplete.theme.css");
+var api = __webpack_require__(/*! ../style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../css-loader/dist/cjs.js!./awesomplete.theme.css */ "./node_modules/css-loader/dist/cjs.js!./node_modules/awesomplete/awesomplete.theme.css");
 
-if (typeof content === 'string') {
-  content = [[module.i, content, '']];
-}
+            content = content.__esModule ? content.default : content;
 
-var options = {}
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
 
 options.insert = "head";
 options.singleton = false;
 
-var update = __webpack_require__(/*! ../style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js")(content, options);
+var update = api(content, options);
 
-if (content.locals) {
-  module.exports = content.locals;
-}
+var exported = content.locals ? content.locals : {};
 
+
+
+module.exports = exported;
 
 /***/ }),
 
@@ -762,9 +774,13 @@ if (content.locals) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(/*! ../css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
 exports.push([module.i, ".awesomplete [hidden] {\n    display: none;\n}\n\n.awesomplete .visually-hidden {\n    position: absolute;\n    clip: rect(0, 0, 0, 0);\n}\n\n.awesomplete {\n    display: inline-block;\n    position: relative;\n}\n\n.awesomplete > input {\n    display: block;\n}\n\n.awesomplete > ul {\n    position: absolute;\n    left: 0;\n    z-index: 1;\n    min-width: 100%;\n    box-sizing: border-box;\n    list-style: none;\n    padding: 0;\n    margin: 0;\n    background: #fff;\n}\n\n.awesomplete > ul:empty {\n    display: none;\n}\n", ""]);
+// Exports
+module.exports = exports;
 
 
 /***/ }),
@@ -776,9 +792,13 @@ exports.push([module.i, ".awesomplete [hidden] {\n    display: none;\n}\n\n.awes
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(/*! ../css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
 exports.push([module.i, ".awesomplete [hidden] {\n    display: none;\n}\n\n.awesomplete .visually-hidden {\n    position: absolute;\n    clip: rect(0, 0, 0, 0);\n}\n\n.awesomplete {\n    display: inline-block;\n    position: relative;\n}\n\n.awesomplete > input {\n    display: block;\n}\n\n.awesomplete > ul {\n    position: absolute;\n    left: 0;\n    z-index: 1;\n    min-width: 100%;\n    box-sizing: border-box;\n    list-style: none;\n    padding: 0;\n    margin: 0;\n    background: #fff;\n}\n\n.awesomplete > ul:empty {\n    display: none;\n}\n\n.awesomplete > ul {\n\tborder-radius: .3em;\n\tmargin: .2em 0 0;\n\tbackground: hsla(0,0%,100%,.9);\n\tbackground: linear-gradient(to bottom right, white, hsla(0,0%,100%,.8));\n\tborder: 1px solid rgba(0,0,0,.3);\n\tbox-shadow: .05em .2em .6em rgba(0,0,0,.2);\n\ttext-shadow: none;\n}\n\n@supports (transform: scale(0)) {\n\t.awesomplete > ul {\n\t\ttransition: .3s cubic-bezier(.4,.2,.5,1.4);\n\t\ttransform-origin: 1.43em -.43em;\n\t}\n\t\n\t.awesomplete > ul[hidden],\n\t.awesomplete > ul:empty {\n\t\topacity: 0;\n\t\ttransform: scale(0);\n\t\tdisplay: block;\n\t\ttransition-timing-function: ease;\n\t}\n}\n\n\t/* Pointer */\n\t.awesomplete > ul:before {\n\t\tcontent: \"\";\n\t\tposition: absolute;\n\t\ttop: -.43em;\n\t\tleft: 1em;\n\t\twidth: 0; height: 0;\n\t\tpadding: .4em;\n\t\tbackground: white;\n\t\tborder: inherit;\n\t\tborder-right: 0;\n\t\tborder-bottom: 0;\n\t\t-webkit-transform: rotate(45deg);\n\t\ttransform: rotate(45deg);\n\t}\n\n\t.awesomplete > ul > li {\n\t\tposition: relative;\n\t\tpadding: .2em .5em;\n\t\tcursor: pointer;\n\t}\n\t\n\t.awesomplete > ul > li:hover {\n\t\tbackground: hsl(200, 40%, 80%);\n\t\tcolor: black;\n\t}\n\t\n\t.awesomplete > ul > li[aria-selected=\"true\"] {\n\t\tbackground: hsl(205, 40%, 40%);\n\t\tcolor: white;\n\t}\n\t\n\t\t.awesomplete mark {\n\t\t\tbackground: hsl(65, 100%, 50%);\n\t\t}\n\t\t\n\t\t.awesomplete li:hover mark {\n\t\t\tbackground: hsl(68, 100%, 41%);\n\t\t}\n\t\t\n\t\t.awesomplete li[aria-selected=\"true\"] mark {\n\t\t\tbackground: hsl(86, 100%, 21%);\n\t\t\tcolor: inherit;\n\t\t}\n", ""]);
+// Exports
+module.exports = exports;
 
 
 /***/ }),
@@ -790,9 +810,13 @@ exports.push([module.i, ".awesomplete [hidden] {\n    display: none;\n}\n\n.awes
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(/*! ../css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
 exports.push([module.i, ".awesomplete > ul {\n\tborder-radius: .3em;\n\tmargin: .2em 0 0;\n\tbackground: hsla(0,0%,100%,.9);\n\tbackground: linear-gradient(to bottom right, white, hsla(0,0%,100%,.8));\n\tborder: 1px solid rgba(0,0,0,.3);\n\tbox-shadow: .05em .2em .6em rgba(0,0,0,.2);\n\ttext-shadow: none;\n}\n\n@supports (transform: scale(0)) {\n\t.awesomplete > ul {\n\t\ttransition: .3s cubic-bezier(.4,.2,.5,1.4);\n\t\ttransform-origin: 1.43em -.43em;\n\t}\n\t\n\t.awesomplete > ul[hidden],\n\t.awesomplete > ul:empty {\n\t\topacity: 0;\n\t\ttransform: scale(0);\n\t\tdisplay: block;\n\t\ttransition-timing-function: ease;\n\t}\n}\n\n\t/* Pointer */\n\t.awesomplete > ul:before {\n\t\tcontent: \"\";\n\t\tposition: absolute;\n\t\ttop: -.43em;\n\t\tleft: 1em;\n\t\twidth: 0; height: 0;\n\t\tpadding: .4em;\n\t\tbackground: white;\n\t\tborder: inherit;\n\t\tborder-right: 0;\n\t\tborder-bottom: 0;\n\t\t-webkit-transform: rotate(45deg);\n\t\ttransform: rotate(45deg);\n\t}\n\n\t.awesomplete > ul > li {\n\t\tposition: relative;\n\t\tpadding: .2em .5em;\n\t\tcursor: pointer;\n\t}\n\t\n\t.awesomplete > ul > li:hover {\n\t\tbackground: hsl(200, 40%, 80%);\n\t\tcolor: black;\n\t}\n\t\n\t.awesomplete > ul > li[aria-selected=\"true\"] {\n\t\tbackground: hsl(205, 40%, 40%);\n\t\tcolor: white;\n\t}\n\t\n\t\t.awesomplete mark {\n\t\t\tbackground: hsl(65, 100%, 50%);\n\t\t}\n\t\t\n\t\t.awesomplete li:hover mark {\n\t\t\tbackground: hsl(68, 100%, 41%);\n\t\t}\n\t\t\n\t\t.awesomplete li[aria-selected=\"true\"] mark {\n\t\t\tbackground: hsl(86, 100%, 21%);\n\t\t\tcolor: inherit;\n\t\t}", ""]);
+// Exports
+module.exports = exports;
 
 
 /***/ }),
@@ -804,9 +828,13 @@ exports.push([module.i, ".awesomplete > ul {\n\tborder-radius: .3em;\n\tmargin: 
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
 exports.push([module.i, ".badge {\r\n    display: inline-block;\r\n    min-width: 1em;\r\n    padding: .3em;\r\n    text-align: center;\r\n    background: #1779ba;\r\n    color: #fefefe;\r\n}\r\n\r\n.badge:not(:first-child) {\r\n    margin-left: 15px;\r\n}\r\n\r\n#excludeFilterSection{\r\n    margin-top: 10px;\r\n}\r\n\r\n.optionDelete{\r\n    cursor: pointer;\r\n}", ""]);
+// Exports
+module.exports = exports;
 
 
 /***/ }),
@@ -818,9 +846,13 @@ exports.push([module.i, ".badge {\r\n    display: inline-block;\r\n    min-width
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".FetishModal {\r\n    display: none; /* Hidden by default */\r\n    position: fixed; /* Stay in place */\r\n    z-index: 9999; /* Sit on top */\r\n    padding-top: 100px; /* Location of the box */\r\n    left: 0;\r\n    top: 0;\r\n    width: 100%; /* Full width */\r\n    height: 100%; /* Full height */\r\n    overflow: auto; /* Enable scroll if needed */\r\n    background-color: rgb(0, 0, 0); /* Fallback color */\r\n    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */\r\n}\r\n\r\n.FetishModal div, .FetishModal h1, .FetishModal h2, .FetishModal h3, .FetishModal h4, .FetishModal h5, .FetishModal h6, .FetishModal p, .FetishModal ul, .FetishModal li, .FetishModal dd, .FetishModal dt {\r\n    color: #8f412c !important;\r\n}\r\n\r\n.FSmodalContent {\r\n    position: relative;\r\n    background-color: #141414;\r\n    color: #ffffff !important;\r\n    margin: auto;\r\n    padding: 0;\r\n    border: 1px solid #888;\r\n    width: 80%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);\r\n    -webkit-animation-name: animatetop;\r\n    -webkit-animation-duration: 0.4s;\r\n    animation-name: animatetop;\r\n    animation-duration: 0.4s\r\n}\r\n\r\n\r\n.button {\r\n    background-color: #4CAF50; /* Green */\r\n    border: none;\r\n    color: white;\r\n    padding: 16px 32px;\r\n    text-align: center;\r\n    text-decoration: none;\r\n    display: inline-block;\r\n    font-size: 16px;\r\n    margin: 4px 2px;\r\n    -webkit-transition-duration: 0.4s; /* Safari */\r\n    transition-duration: 0.4s;\r\n    cursor: pointer;\r\n}\r\n\r\n.blackButton {\r\n    background-color: #141414;\r\n    color: white;\r\n    border: 2px solid #555555;\r\n}\r\n\r\n.blackButton:hover {\r\n    background-color: #555555;\r\n    color: white;\r\n}\r\n\r\n/* Add Animation */\r\n@-webkit-keyframes animatetop {\r\n    from {\r\n        top: -300px;\r\n        opacity: 0\r\n    }\r\n    to {\r\n        top: 0;\r\n        opacity: 1\r\n    }\r\n}\r\n\r\n@keyframes animatetop {\r\n    from {\r\n        top: -300px;\r\n        opacity: 0\r\n    }\r\n    to {\r\n        top: 0;\r\n        opacity: 1\r\n    }\r\n}\r\n\r\n/* The Close Button */\r\n.FSclose {\r\n    float: right;\r\n    font-size: 28px;\r\n    font-weight: bold;\r\n    margin-bottom: 1rem;\r\n}\r\n\r\n.FSclose:hover,\r\n.FSclose:focus {\r\n    color: #8f412c6e;\r\n    text-decoration: none;\r\n    cursor: pointer;\r\n}\r\n\r\n.FSmodalHeader {\r\n    padding: 0.5rem;\r\n    color: #8f412c;\r\n}\r\n\r\n.FSModalBody {\r\n    padding: 1rem;\r\n}\r\n\r\n.FSModalFooter {\r\n    color: white;\r\n    display: flex;\r\n    justify-content: flex-end;\r\n    padding: 0.5rem;\r\n    border-top: 1px solid #333232;\r\n\r\n}\r\n\r\n.FSmodalTitle {\r\n    margin-left: 1rem;\r\n}\r\n\r\n.awesomplete > ul {\r\n    color: #ff0000;\r\n}", ""]);
+exports.push([module.i, ".FetishModal {\r\n    display: none; /* Hidden by default */\r\n    position: fixed; /* Stay in place */\r\n    z-index: 9999; /* Sit on top */\r\n    padding-top: 100px; /* Location of the box */\r\n    left: 0;\r\n    top: 0;\r\n    width: 100%; /* Full width */\r\n    height: 100%; /* Full height */\r\n    overflow: auto; /* Enable scroll if needed */\r\n    background-color: rgb(0, 0, 0); /* Fallback color */\r\n    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */\r\n}\r\n\r\n.FetishModal div, .FetishModal h1, .FetishModal h2, .FetishModal h3, .FetishModal h4, .FetishModal h5, .FetishModal h6, .FetishModal p, .FetishModal ul, .FetishModal li, .FetishModal dd, .FetishModal dt {\r\n    color: #8f412c !important;\r\n}\r\n\r\n.FSmodalContent {\r\n    position: relative;\r\n    background-color: #141414;\r\n    color: #ffffff !important;\r\n    margin: auto;\r\n    padding: 0;\r\n    border: 1px solid #888;\r\n    width: 80%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);\r\n    -webkit-animation-name: animatetop;\r\n    -webkit-animation-duration: 0.4s;\r\n    animation-name: animatetop;\r\n    animation-duration: 0.4s\r\n}\r\n\r\n\r\n.button {\r\n    background-color: #4CAF50; /* Green */\r\n    border: none;\r\n    color: white;\r\n    padding: 7px 21px;\r\n    text-align: center;\r\n    text-decoration: none;\r\n    display: inline-block;\r\n    font-size: 16px;\r\n    margin: 4px 2px;\r\n    -webkit-transition-duration: 0.4s; /* Safari */\r\n    transition-duration: 0.4s;\r\n    cursor: pointer;\r\n}\r\n\r\n.blackButton {\r\n    background-color: #141414;\r\n    color: white;\r\n    border: 2px solid #555555;\r\n}\r\n\r\n.blackButton:hover {\r\n    background-color: #555555;\r\n    color: white;\r\n}\r\n\r\n/* Add Animation */\r\n@-webkit-keyframes animatetop {\r\n    from {\r\n        top: -300px;\r\n        opacity: 0\r\n    }\r\n    to {\r\n        top: 0;\r\n        opacity: 1\r\n    }\r\n}\r\n\r\n@keyframes animatetop {\r\n    from {\r\n        top: -300px;\r\n        opacity: 0\r\n    }\r\n    to {\r\n        top: 0;\r\n        opacity: 1\r\n    }\r\n}\r\n\r\n/* The Close Button */\r\n.FSclose {\r\n    float: right;\r\n    font-size: 28px;\r\n    font-weight: bold;\r\n    margin-bottom: 1rem;\r\n}\r\n\r\n.FSclose:hover,\r\n.FSclose:focus {\r\n    color: #8f412c6e;\r\n    text-decoration: none;\r\n    cursor: pointer;\r\n}\r\n\r\n.FSmodalHeader {\r\n    padding: 0.5rem;\r\n    color: #8f412c;\r\n}\r\n\r\n.FSModalBody {\r\n    padding: 1rem;\r\n}\r\n\r\n.FSModalFooter {\r\n    color: white;\r\n    display: flex;\r\n    justify-content: flex-end;\r\n    padding: 0.5rem;\r\n    border-top: 1px solid #333232;\r\n\r\n}\r\n\r\n.FSmodalTitle {\r\n    margin-left: 1rem;\r\n}\r\n\r\n.awesomplete > ul {\r\n    color: #ff0000;\r\n}", ""]);
+// Exports
+module.exports = exports;
 
 
 /***/ }),
@@ -849,7 +881,7 @@ module.exports = function (useSourceMap) {
       var content = cssWithMappingToString(item, useSourceMap);
 
       if (item[2]) {
-        return "@media ".concat(item[2], "{").concat(content, "}");
+        return "@media ".concat(item[2], " {").concat(content, "}");
       }
 
       return content;
@@ -858,7 +890,7 @@ module.exports = function (useSourceMap) {
   // eslint-disable-next-line func-names
 
 
-  list.i = function (modules, mediaQuery) {
+  list.i = function (modules, mediaQuery, dedupe) {
     if (typeof modules === 'string') {
       // eslint-disable-next-line no-param-reassign
       modules = [[null, modules, '']];
@@ -866,30 +898,34 @@ module.exports = function (useSourceMap) {
 
     var alreadyImportedModules = {};
 
-    for (var i = 0; i < this.length; i++) {
-      // eslint-disable-next-line prefer-destructuring
-      var id = this[i][0];
+    if (dedupe) {
+      for (var i = 0; i < this.length; i++) {
+        // eslint-disable-next-line prefer-destructuring
+        var id = this[i][0];
 
-      if (id != null) {
-        alreadyImportedModules[id] = true;
+        if (id != null) {
+          alreadyImportedModules[id] = true;
+        }
       }
     }
 
     for (var _i = 0; _i < modules.length; _i++) {
-      var item = modules[_i]; // skip already imported module
-      // this implementation is not 100% perfect for weird media query combinations
-      // when a module is imported multiple times with different media queries.
-      // I hope this will never occur (Hey this way we have smaller bundles)
+      var item = [].concat(modules[_i]);
 
-      if (item[0] == null || !alreadyImportedModules[item[0]]) {
-        if (mediaQuery && !item[2]) {
-          item[2] = mediaQuery;
-        } else if (mediaQuery) {
-          item[2] = "(".concat(item[2], ") and (").concat(mediaQuery, ")");
-        }
-
-        list.push(item);
+      if (dedupe && alreadyImportedModules[item[0]]) {
+        // eslint-disable-next-line no-continue
+        continue;
       }
+
+      if (mediaQuery) {
+        if (!item[2]) {
+          item[2] = mediaQuery;
+        } else {
+          item[2] = "".concat(mediaQuery, " and ").concat(item[2]);
+        }
+      }
+
+      list.push(item);
     }
   };
 
@@ -908,7 +944,7 @@ function cssWithMappingToString(item, useSourceMap) {
   if (useSourceMap && typeof btoa === 'function') {
     var sourceMapping = toComment(cssMapping);
     var sourceURLs = cssMapping.sources.map(function (source) {
-      return "/*# sourceURL=".concat(cssMapping.sourceRoot).concat(source, " */");
+      return "/*# sourceURL=".concat(cssMapping.sourceRoot || '').concat(source, " */");
     });
     return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
   }
@@ -1662,8 +1698,6 @@ process.umask = function() { return 0; };
 "use strict";
 
 
-var stylesInDom = {};
-
 var isOldIE = function isOldIE() {
   var memo;
   return function memorize() {
@@ -1704,80 +1738,69 @@ var getTarget = function getTarget() {
   };
 }();
 
-function listToStyles(list, options) {
-  var styles = [];
-  var newStyles = {};
+var stylesInDom = [];
+
+function getIndexByIdentifier(identifier) {
+  var result = -1;
+
+  for (var i = 0; i < stylesInDom.length; i++) {
+    if (stylesInDom[i].identifier === identifier) {
+      result = i;
+      break;
+    }
+  }
+
+  return result;
+}
+
+function modulesToDom(list, options) {
+  var idCountMap = {};
+  var identifiers = [];
 
   for (var i = 0; i < list.length; i++) {
     var item = list[i];
     var id = options.base ? item[0] + options.base : item[0];
-    var css = item[1];
-    var media = item[2];
-    var sourceMap = item[3];
-    var part = {
-      css: css,
-      media: media,
-      sourceMap: sourceMap
+    var count = idCountMap[id] || 0;
+    var identifier = "".concat(id, " ").concat(count);
+    idCountMap[id] = count + 1;
+    var index = getIndexByIdentifier(identifier);
+    var obj = {
+      css: item[1],
+      media: item[2],
+      sourceMap: item[3]
     };
 
-    if (!newStyles[id]) {
-      styles.push(newStyles[id] = {
-        id: id,
-        parts: [part]
+    if (index !== -1) {
+      stylesInDom[index].references++;
+      stylesInDom[index].updater(obj);
+    } else {
+      stylesInDom.push({
+        identifier: identifier,
+        updater: addStyle(obj, options),
+        references: 1
       });
-    } else {
-      newStyles[id].parts.push(part);
     }
+
+    identifiers.push(identifier);
   }
 
-  return styles;
-}
-
-function addStylesToDom(styles, options) {
-  for (var i = 0; i < styles.length; i++) {
-    var item = styles[i];
-    var domStyle = stylesInDom[item.id];
-    var j = 0;
-
-    if (domStyle) {
-      domStyle.refs++;
-
-      for (; j < domStyle.parts.length; j++) {
-        domStyle.parts[j](item.parts[j]);
-      }
-
-      for (; j < item.parts.length; j++) {
-        domStyle.parts.push(addStyle(item.parts[j], options));
-      }
-    } else {
-      var parts = [];
-
-      for (; j < item.parts.length; j++) {
-        parts.push(addStyle(item.parts[j], options));
-      }
-
-      stylesInDom[item.id] = {
-        id: item.id,
-        refs: 1,
-        parts: parts
-      };
-    }
-  }
+  return identifiers;
 }
 
 function insertStyleElement(options) {
   var style = document.createElement('style');
+  var attributes = options.attributes || {};
 
-  if (typeof options.attributes.nonce === 'undefined') {
+  if (typeof attributes.nonce === 'undefined') {
     var nonce =  true ? __webpack_require__.nc : undefined;
 
     if (nonce) {
-      options.attributes.nonce = nonce;
+      attributes.nonce = nonce;
     }
   }
 
-  Object.keys(options.attributes).forEach(function (key) {
-    style.setAttribute(key, options.attributes[key]);
+  Object.keys(attributes).forEach(function (key) {
+    style.setAttribute(key, attributes[key]);
   });
 
   if (typeof options.insert === 'function') {
@@ -1815,7 +1838,7 @@ var replaceText = function replaceText() {
 }();
 
 function applyToSingletonTag(style, index, remove, obj) {
-  var css = remove ? '' : obj.css; // For old IE
+  var css = remove ? '' : obj.media ? "@media ".concat(obj.media, " {").concat(obj.css, "}") : obj.css; // For old IE
 
   /* istanbul ignore if  */
 
@@ -1844,6 +1867,8 @@ function applyToTag(style, options, obj) {
 
   if (media) {
     style.setAttribute('media', media);
+  } else {
+    style.removeAttribute('media');
   }
 
   if (sourceMap && btoa) {
@@ -1901,45 +1926,43 @@ function addStyle(obj, options) {
 }
 
 module.exports = function (list, options) {
-  options = options || {};
-  options.attributes = typeof options.attributes === 'object' ? options.attributes : {}; // Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+  options = options || {}; // Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
   // tags it will allow on a page
 
   if (!options.singleton && typeof options.singleton !== 'boolean') {
     options.singleton = isOldIE();
   }
 
-  var styles = listToStyles(list, options);
-  addStylesToDom(styles, options);
+  list = list || [];
+  var lastIdentifiers = modulesToDom(list, options);
   return function update(newList) {
-    var mayRemove = [];
+    newList = newList || [];
 
-    for (var i = 0; i < styles.length; i++) {
-      var item = styles[i];
-      var domStyle = stylesInDom[item.id];
+    if (Object.prototype.toString.call(newList) !== '[object Array]') {
+      return;
+    }
 
-      if (domStyle) {
-        domStyle.refs--;
-        mayRemove.push(domStyle);
+    for (var i = 0; i < lastIdentifiers.length; i++) {
+      var identifier = lastIdentifiers[i];
+      var index = getIndexByIdentifier(identifier);
+      stylesInDom[index].references--;
+    }
+
+    var newLastIdentifiers = modulesToDom(newList, options);
+
+    for (var _i = 0; _i < lastIdentifiers.length; _i++) {
+      var _identifier = lastIdentifiers[_i];
+
+      var _index = getIndexByIdentifier(_identifier);
+
+      if (stylesInDom[_index].references === 0) {
+        stylesInDom[_index].updater();
+
+        stylesInDom.splice(_index, 1);
       }
     }
 
-    if (newList) {
-      var newStyles = listToStyles(newList, options);
-      addStylesToDom(newStyles, options);
-    }
-
-    for (var _i = 0; _i < mayRemove.length; _i++) {
-      var _domStyle = mayRemove[_i];
-
-      if (_domStyle.refs === 0) {
-        for (var j = 0; j < _domStyle.parts.length; j++) {
-          _domStyle.parts[j]();
-        }
-
-        delete stylesInDom[_domStyle.id];
-      }
-    }
+    lastIdentifiers = newLastIdentifiers;
   };
 };
 
@@ -1990,75 +2013,458 @@ module.exports = g;
 
 /***/ }),
 
-/***/ "./src/FetishDocumentParser.ts":
-/*!*************************************!*\
-  !*** ./src/FetishDocumentParser.ts ***!
-  \*************************************/
+/***/ "./src/Main.ts":
+/*!*********************!*\
+  !*** ./src/Main.ts ***!
+  \*********************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! FetishImage */ "./src/FetishImage.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, FetishImage_1) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! utils/Utils */ "./src/utils/Utils.ts"), __webpack_require__(/*! JSZip */ "JSZip"), __webpack_require__(/*! Awesomplete */ "./node_modules/Awesomplete/awesomplete.js"), __webpack_require__(/*! ./model/modules/ImageLoader */ "./src/model/modules/ImageLoader.ts"), __webpack_require__(/*! ./factory/FetishSiteFactory */ "./src/factory/FetishSiteFactory.ts"), __webpack_require__(/*! ./factory/UIFactory */ "./src/factory/UIFactory.ts"), __webpack_require__(/*! awesomplete/awesomplete.base.css */ "./node_modules/awesomplete/awesomplete.base.css"), __webpack_require__(/*! awesomplete/awesomplete.css */ "./node_modules/awesomplete/awesomplete.css"), __webpack_require__(/*! awesomplete/awesomplete.theme.css */ "./node_modules/awesomplete/awesomplete.theme.css"), __webpack_require__(/*! css/custom.css */ "./src/css/custom.css")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, Utils_1, JSZip, Awesomplete, ImageLoader_1, FetishSiteFactory_1, UIFactory_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    class KonachanParser {
-        parse(doc) {
-            let list = doc.getElementById("post-list-posts");
-            let childrenLi = list.childNodes;
-            let retArr = [];
-            for (let i = 0; i < childrenLi.length; i++) {
-                let e = childrenLi[i];
-                if (e.nodeType == Node.ELEMENT_NODE) {
-                    let containerInfo = this._parseContainer(e);
-                    retArr.push(new FetishImage_1.FetishImage(containerInfo));
+    var Main;
+    (function (Main) {
+        let _isInit = false;
+        let _images = [];
+        let _filtered = [];
+        function doDownloadZip(files, title) {
+            setLabel("compressing");
+            let zip = new JSZip();
+            for (let img of files) {
+                zip.file(img.title, img.image);
+            }
+            return zip.generateAsync({ type: "blob" }).then(function (blob) {
+                if (!title) {
+                    title = Utils_1.QueryString.tags;
+                }
+                else {
+                    title = `${Utils_1.QueryString.tags} (${title})`;
+                }
+                saveAs(blob, title + ".zip");
+                setLabel();
+            });
+        }
+        Main.doDownloadZip = doDownloadZip;
+        function setLabel(str = "Download all your fetishes") {
+            document.getElementById("fetishAnchor").innerText = str;
+        }
+        Main.setLabel = setLabel;
+        function init() {
+            if (_isInit) {
+                return;
+            }
+            buildUI();
+            function buildUI() {
+                function displayOptions(bool) {
+                    let opParent = document.getElementById("fetishDownloadOptions").parentElement;
+                    opParent.style.display = bool ? "inline" : "none";
+                }
+                let uiMaker = UIFactory_1.UIFactory.getUI(document);
+                uiMaker.buildUI();
+                setLabel();
+                let idDownloading = false;
+                let anchor = document.getElementById("fetishAnchor");
+                anchor.addEventListener("click", async (e) => {
+                    if (idDownloading) {
+                        return;
+                    }
+                    if (_isInit) {
+                        doDownloadZip(_filtered);
+                        return;
+                    }
+                    _images = [];
+                    let options = document.getElementById("fetishDownloadOptions");
+                    displayOptions(false);
+                    idDownloading = true;
+                    setLabel("Parsing pages... Please wait");
+                    let site = FetishSiteFactory_1.FetishSiteFactory.getSite(window.document);
+                    let pages = await site.pages;
+                    for (let page of pages) {
+                        _images = _images.concat(page.images);
+                    }
+                    _filtered = _images;
+                    setLabel(`Click to download ${_filtered.length} images`);
+                    let inEvent = false;
+                    let awComp;
+                    function createOptionsModal() {
+                        let id = "fetishDownloadOptionsModal";
+                        let modal = Utils_1.DomUtil.createModal({
+                            id: id,
+                            body: (function () {
+                                let html = "";
+                                html += '<label for="tagInput">Exclude tags: </label>';
+                                html += '<input id="tagInput" />';
+                                html += "<div class='filterOptionSection' data-type='exclude' id='excludeFilterSection'></div>";
+                                return html;
+                            }()),
+                            title: "Download Options",
+                            modalBodyStyle: {
+                                "height": "500px",
+                                "overflow": "auto"
+                            },
+                            footer: `<button class="button blackButton fetishOptionsConfirm apply">Apply</button>`
+                        });
+                        let exists = document.getElementById(id) !== null;
+                        if (exists) {
+                            document.getElementById(id).remove();
+                        }
+                        let el = document.body;
+                        el.insertAdjacentElement("beforeend", modal);
+                        modal.getElementsByClassName("fetishOptionsConfirm")[0].addEventListener("click", evt => {
+                            setLabel(`Click to download ${_filtered.length} images`);
+                            let filters = {
+                                excludeTags: []
+                            };
+                            // build filters
+                            modal.querySelectorAll(".filterOptionSection").forEach(section => {
+                                let el = section;
+                                let type = el.dataset.type;
+                                switch (type) {
+                                    case "exclude":
+                                        el.querySelectorAll(".badge").forEach(badge => {
+                                            let badgeEl = badge;
+                                            let toExclude = badgeEl.dataset.value;
+                                            filters.excludeTags.push(toExclude);
+                                        });
+                                        break;
+                                }
+                            });
+                            _filtered = filter(filters);
+                            setLabel(`Click to download ${_filtered.length} images`);
+                            Utils_1.DomUtil.closeModal(modal);
+                        });
+                    }
+                    createOptionsModal();
+                    let hansBind = false;
+                    let downloadOptionsCallBack = () => {
+                        Utils_1.DomUtil.openModal(document.getElementById("fetishDownloadOptionsModal"));
+                        if (hansBind) {
+                            return;
+                        }
+                        let tags = new Set();
+                        for (let im of _images) {
+                            for (let tag of im.tags) {
+                                tags.add(tag);
+                            }
+                        }
+                        let input = document.getElementById("tagInput");
+                        awComp = new Awesomplete(input, {
+                            list: [...tags],
+                            replace: function (suggestion) {
+                                // @ts-ignore
+                                this.input.value = "";
+                            }
+                        });
+                        let tagSelect = (ev) => {
+                            let excludedTags = new Set();
+                            // @ts-ignore
+                            let applied = ev.text;
+                            // @ts-ignore
+                            let v = applied.value;
+                            let tagArr = [...tags];
+                            if (!tagArr.includes(v)) {
+                                return;
+                            }
+                            let e = document.getElementById("excludeFilterSection");
+                            let html = `<span class="badge" data-value="${v}">${v} <span class="optionDelete">&times;</span></span>`;
+                            let createdHtml = Utils_1.DomUtil.createElementFromHTML(html);
+                            createdHtml.querySelector(".optionDelete").addEventListener("click", e => {
+                                e.target.parentElement.remove();
+                            });
+                            e.insertAdjacentElement("beforeend", createdHtml);
+                        };
+                        input.addEventListener("awesomplete-select", tagSelect);
+                        hansBind = true;
+                    };
+                    let batchLimit = 250;
+                    options.addEventListener("click", downloadOptionsCallBack);
+                    displayOptions(true);
+                    let clickDownloadCallBack = async () => {
+                        displayOptions(false);
+                        if (inEvent) {
+                            return;
+                        }
+                        try {
+                            inEvent = true;
+                            await ImageLoader_1.ImageLoader.loadImages(_filtered, batchLimit);
+                            if (ImageLoader_1.ImageLoader.isBatch && ImageLoader_1.ImageLoader.batch.length > 0) {
+                                // download the rest of the batch
+                                await doDownloadZip(ImageLoader_1.ImageLoader.batch, "final");
+                                // init is not true, as batches remove images as they are downloaded
+                            }
+                            else {
+                                await doDownloadZip(_filtered);
+                                _isInit = true;
+                            }
+                        }
+                        finally {
+                            anchor.removeEventListener("click", clickDownloadCallBack);
+                            options.removeEventListener("click", downloadOptionsCallBack);
+                            inEvent = false;
+                            idDownloading = false;
+                        }
+                    };
+                    anchor.addEventListener("click", clickDownloadCallBack);
+                });
+            }
+        }
+        Main.init = init;
+        function filter(filterObject) {
+            let newArray = [];
+            for (let image of _images) {
+                let tagsForImage = image.tags;
+                outer: for (let filterType in filterObject) {
+                    let arrayOfSelectedTags = filterObject[filterType];
+                    for (let selectedTag of arrayOfSelectedTags) {
+                        if (tagsForImage.indexOf(selectedTag) > -1) {
+                            continue outer;
+                        }
+                    }
+                    newArray.push(image);
                 }
             }
-            return retArr;
+            return newArray;
         }
-        _parseContainer(el) {
-            let url;
-            let res;
-            let title;
-            let tags;
-            let tagForTitle = el.getElementsByClassName("inner")[0];
-            let aNameTag = tagForTitle.firstChild;
-            let infoTag = el.getElementsByClassName("directlink")[0];
-            let tagInfo = aNameTag.firstChild;
-            url = infoTag.href;
-            res = infoTag.getElementsByClassName("directlink-res")[0].innerHTML;
-            title = `${aNameTag.href.substr(aNameTag.href.lastIndexOf('/') + 1)}.${url.split(".").pop()}`;
-            let tagInfoString = tagInfo.title;
-            let strSplit = tagInfoString.split(" ");
-            let slice = strSplit.slice(strSplit.indexOf("Tags:") + 1);
-            if (slice.length === 0) {
-                tags = [];
-            }
-            else {
-                slice.splice(slice.indexOf(":") - 1);
-                tags = slice;
-            }
-            return {
-                url: url,
-                res: res,
-                title: title,
-                tags: tags
-            };
-        }
-    }
-    exports.KonachanParser = KonachanParser;
+    })(Main = exports.Main || (exports.Main = {}));
+    Main.init();
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 
 /***/ }),
 
-/***/ "./src/FetishImage.ts":
+/***/ "./src/css/custom.css":
 /*!****************************!*\
-  !*** ./src/FetishImage.ts ***!
+  !*** ./src/css/custom.css ***!
   \****************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! Utils */ "./src/Utils.ts"), __webpack_require__(/*! js-sha256 */ "./node_modules/js-sha256/src/sha256.js")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, Utils_1, js_sha256_1) {
+var api = __webpack_require__(/*! ../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../node_modules/css-loader/dist/cjs.js!./custom.css */ "./node_modules/css-loader/dist/cjs.js!./src/css/custom.css");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+
+/***/ "./src/css/modal.css":
+/*!***************************!*\
+  !*** ./src/css/modal.css ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../node_modules/css-loader/dist/cjs.js!./modal.css */ "./node_modules/css-loader/dist/cjs.js!./src/css/modal.css");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+
+/***/ "./src/factory/FetishSiteFactory.ts":
+/*!******************************************!*\
+  !*** ./src/factory/FetishSiteFactory.ts ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ../site/IFetishSite */ "./src/site/IFetishSite.ts"), __webpack_require__(/*! ../utils/Utils */ "./src/utils/Utils.ts"), __webpack_require__(/*! ../site/impl/KonaChan */ "./src/site/impl/KonaChan.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, IFetishSite_1, Utils_1, KonaChan_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var FetishSiteFactory;
+    (function (FetishSiteFactory) {
+        function getSite(doc) {
+            switch (Utils_1.SiteUtils.getSite(doc)) {
+                case IFetishSite_1.SITES.KONACHAN:
+                    return new KonaChan_1.KonaChan(doc);
+            }
+        }
+        FetishSiteFactory.getSite = getSite;
+    })(FetishSiteFactory = exports.FetishSiteFactory || (exports.FetishSiteFactory = {}));
+}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ "./src/factory/UIFactory.ts":
+/*!**********************************!*\
+  !*** ./src/factory/UIFactory.ts ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ../utils/Utils */ "./src/utils/Utils.ts"), __webpack_require__(/*! ../site/IFetishSite */ "./src/site/IFetishSite.ts"), __webpack_require__(/*! ../model/UI/impl/KonaChanUi */ "./src/model/UI/impl/KonaChanUi.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, Utils_1, IFetishSite_1, KonaChanUi_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var UIFactory;
+    (function (UIFactory) {
+        function getUI(doc) {
+            switch (Utils_1.SiteUtils.getSite(doc)) {
+                case IFetishSite_1.SITES.KONACHAN:
+                    return new KonaChanUi_1.KonaChanUi(doc);
+            }
+        }
+        UIFactory.getUI = getUI;
+    })(UIFactory = exports.UIFactory || (exports.UIFactory = {}));
+}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ "./src/model/FetishPage.ts":
+/*!*********************************!*\
+  !*** ./src/model/FetishPage.ts ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ../site/IFetishSite */ "./src/site/IFetishSite.ts"), __webpack_require__(/*! ../parser/impl/FetishDocumentParser */ "./src/parser/impl/FetishDocumentParser.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, IFetishSite_1, FetishDocumentParser_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class FetishPage {
+        constructor(doc, site) {
+            this._imageCahce = [];
+            switch (site) {
+                case IFetishSite_1.SITES.KONACHAN:
+                    this.fetishDocumentParser = new FetishDocumentParser_1.KonachanParser();
+                    break;
+            }
+            this.doc = doc;
+        }
+        get images() {
+            if (this._imageCahce.length === 0) {
+                this._imageCahce = this.fetishDocumentParser.parse(this.doc);
+                return this._imageCahce;
+            }
+            return this._imageCahce;
+        }
+    }
+    exports.FetishPage = FetishPage;
+}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ "./src/model/UI/AbstractUI.ts":
+/*!************************************!*\
+  !*** ./src/model/UI/AbstractUI.ts ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class AbstractUI {
+        constructor(doc) {
+            this.doc = doc;
+        }
+    }
+    exports.AbstractUI = AbstractUI;
+}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ "./src/model/UI/impl/KonaChanUi.ts":
+/*!*****************************************!*\
+  !*** ./src/model/UI/impl/KonaChanUi.ts ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ../AbstractUI */ "./src/model/UI/AbstractUI.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, AbstractUI_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class KonaChanUi extends AbstractUI_1.AbstractUI {
+        constructor() {
+            super(...arguments);
+            this.ulSideBar = this.doc.getElementById("subnavbar");
+        }
+        createLi() {
+            let node = this.doc.createElement("LI");
+            this.ulSideBar.appendChild(node);
+            return node;
+        }
+        buildUI() {
+            function makeDoDownload() {
+                let node = this.createLi();
+                let textnode = this.doc.createTextNode("");
+                let aTag = this.doc.createElement("a");
+                aTag.id = "fetishAnchor";
+                aTag.appendChild(textnode);
+                aTag.href = "#";
+                node.appendChild(aTag);
+            }
+            function makeDownloadOptionsTag() {
+                let node = this.createLi();
+                node.style.display = "none";
+                let textnode = this.doc.createTextNode("Download Options");
+                let aTag = this.doc.createElement("a");
+                aTag.id = "fetishDownloadOptions";
+                aTag.appendChild(textnode);
+                aTag.href = "#";
+                aTag.innerText = "Download Options";
+                node.appendChild(aTag);
+            }
+            makeDoDownload.call(this);
+            makeDownloadOptionsTag.call(this);
+        }
+    }
+    exports.KonaChanUi = KonaChanUi;
+}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ "./src/model/impl/FetishImage.ts":
+/*!***************************************!*\
+  !*** ./src/model/impl/FetishImage.ts ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! utils/Utils */ "./src/utils/Utils.ts"), __webpack_require__(/*! js-sha256 */ "./node_modules/js-sha256/src/sha256.js")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, Utils_1, js_sha256_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class FetishImage {
@@ -2130,128 +2536,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 /***/ }),
 
-/***/ "./src/FetishSite.ts":
-/*!***************************!*\
-  !*** ./src/FetishSite.ts ***!
-  \***************************/
+/***/ "./src/model/modules/ImageLoader.ts":
+/*!******************************************!*\
+  !*** ./src/model/modules/ImageLoader.ts ***!
+  \******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ./IFetishSite */ "./src/IFetishSite.ts"), __webpack_require__(/*! ./Utils */ "./src/Utils.ts"), __webpack_require__(/*! ./Main */ "./src/Main.ts"), __webpack_require__(/*! ./FetishDocumentParser */ "./src/FetishDocumentParser.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, IFetishSite_1, Utils_1, Main_1, FetishDocumentParser_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    class FetishSite {
-        constructor(doc) {
-            this.doc = doc;
-        }
-    }
-    class KonaChan extends FetishSite {
-        get pages() {
-            async function load(urls) {
-                let count = 0;
-                let arr = [];
-                for (let url of urls) {
-                    let response = await fetch(url);
-                    let html = await response.text();
-                    count++;
-                    let domParser = new DOMParser();
-                    let doc = domParser.parseFromString(html, "text/html");
-                    let fe = new FetishPage(doc, this.site);
-                    let percent = Math.floor(100 * count / urls.length);
-                    Main_1.Main.setLabel(`Parsing pages ${percent.toString()}% done`);
-                    arr.push(fe);
-                }
-                arr.push(new FetishPage(this.doc, this.site));
-                return arr;
-            }
-            let allPages = this.doc.querySelectorAll("#paginator a:not(.next_page):not(.previous_page)");
-            let urls = [];
-            if (allPages.length > 0) {
-                let arrOfPageA = Array.from(allPages);
-                let firstPage = arrOfPageA[0];
-                let lastPage = arrOfPageA[arrOfPageA.length - 1];
-                let firstPageNumber = Number.parseInt(firstPage.text);
-                let lastPageNumber = Number.parseInt(lastPage.text);
-                let rangeBetween = Utils_1.MathUtil.range(firstPageNumber, lastPageNumber);
-                let baseUrl = window.location.href;
-                let currentPage = Utils_1.QueryString.page === undefined ? 1 : Utils_1.QueryString.page;
-                for (let i = 0; i < rangeBetween.length; i++) {
-                    let num = String(rangeBetween[i]);
-                    if (num == currentPage) {
-                        continue;
-                    }
-                    let newUrl = Utils_1.AjaxUtils.addParameter(baseUrl, "page", num.toString(), true);
-                    urls.push(newUrl);
-                }
-            }
-            return load.call(this, urls);
-        }
-        get site() {
-            return IFetishSite_1.SITES.KONACHAN;
-        }
-    }
-    class FetishPage {
-        constructor(doc, site) {
-            this._imageCahce = [];
-            switch (site) {
-                case IFetishSite_1.SITES.KONACHAN:
-                    this.fetishDocumentParser = new FetishDocumentParser_1.KonachanParser();
-                    break;
-            }
-            this.doc = doc;
-        }
-        get images() {
-            if (this._imageCahce.length === 0) {
-                this._imageCahce = this.fetishDocumentParser.parse(this.doc);
-                return this._imageCahce;
-            }
-            return this._imageCahce;
-        }
-    }
-    var FetishSiteFactory;
-    (function (FetishSiteFactory) {
-        function getSite(doc) {
-            switch (Utils_1.SiteUtils.getSite(doc)) {
-                case IFetishSite_1.SITES.KONACHAN:
-                    return new KonaChan(doc);
-            }
-        }
-        FetishSiteFactory.getSite = getSite;
-    })(FetishSiteFactory = exports.FetishSiteFactory || (exports.FetishSiteFactory = {}));
-}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ }),
-
-/***/ "./src/IFetishSite.ts":
-/*!****************************!*\
-  !*** ./src/IFetishSite.ts ***!
-  \****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var SITES;
-    (function (SITES) {
-        SITES["KONACHAN"] = "konachan";
-    })(SITES = exports.SITES || (exports.SITES = {}));
-}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ }),
-
-/***/ "./src/ImageLoader.ts":
-/*!****************************!*\
-  !*** ./src/ImageLoader.ts ***!
-  \****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ./Main */ "./src/Main.ts"), __webpack_require__(/*! ./Utils */ "./src/Utils.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, Main_1, Utils_1) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ../../Main */ "./src/Main.ts"), __webpack_require__(/*! ../../utils/Utils */ "./src/utils/Utils.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, Main_1, Utils_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var ImageLoader;
@@ -2280,11 +2572,11 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                                 ImageLoader.batch.push(im);
                                 if (count % batchLimit === 0) {
                                     batchNum++;
-                                    let of = Math.floor(Math.round(images.length / batchLimit) * batchLimit);
-                                    let ofStr = of.toString()[0];
-                                    if (images.length % batchLimit !== 0 && images.length % batchLimit > batchLimit) {
-                                        ofStr = String(parseInt(ofStr) + 1);
+                                    let ofString = Math.floor(Math.round(images.length / batchLimit));
+                                    if (images.length % batchLimit != 0) {
+                                        ofString++;
                                     }
+                                    let ofStr = String(ofString);
                                     await Main_1.Main.doDownloadZip(ImageLoader.batch, `${batchNum} of ${ofStr}`);
                                     for (let i = 0; i < ImageLoader.batch.length; i++) {
                                         ImageLoader.batch[i].unloadImage();
@@ -2330,283 +2622,182 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 /***/ }),
 
-/***/ "./src/Main.ts":
-/*!*********************!*\
-  !*** ./src/Main.ts ***!
-  \*********************/
+/***/ "./src/parser/impl/FetishDocumentParser.ts":
+/*!*************************************************!*\
+  !*** ./src/parser/impl/FetishDocumentParser.ts ***!
+  \*************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! Utils */ "./src/Utils.ts"), __webpack_require__(/*! JSZip */ "JSZip"), __webpack_require__(/*! ./FetishSite */ "./src/FetishSite.ts"), __webpack_require__(/*! ./UI */ "./src/UI.ts"), __webpack_require__(/*! Awesomplete */ "./node_modules/Awesomplete/awesomplete.js"), __webpack_require__(/*! ./ImageLoader */ "./src/ImageLoader.ts"), __webpack_require__(/*! awesomplete/awesomplete.base.css */ "./node_modules/awesomplete/awesomplete.base.css"), __webpack_require__(/*! awesomplete/awesomplete.css */ "./node_modules/awesomplete/awesomplete.css"), __webpack_require__(/*! awesomplete/awesomplete.theme.css */ "./node_modules/awesomplete/awesomplete.theme.css"), __webpack_require__(/*! css/custom.css */ "./src/css/custom.css")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, Utils_1, JSZip, FetishSite_1, UI_1, Awesomplete, ImageLoader_1) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! model/impl/FetishImage */ "./src/model/impl/FetishImage.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, FetishImage_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    var Main;
-    (function (Main) {
-        let _isInit = false;
-        let _images = [];
-        function doDownloadZip(files, title) {
-            setLabel("compressing");
-            let zip = new JSZip();
-            for (let img of files) {
-                zip.file(img.title, img.image);
+    class KonachanParser {
+        parse(doc) {
+            let list = doc.getElementById("post-list-posts");
+            if (list == null) {
+                return [];
             }
-            return zip.generateAsync({ type: "blob" }).then(function (blob) {
-                if (!title) {
-                    title = Utils_1.QueryString.tags;
+            let childrenLi = list.childNodes;
+            let retArr = [];
+            for (let i = 0; i < childrenLi.length; i++) {
+                let e = childrenLi[i];
+                if (e.nodeType == Node.ELEMENT_NODE) {
+                    let containerInfo = this._parseContainer(e);
+                    retArr.push(new FetishImage_1.FetishImage(containerInfo));
                 }
-                else {
-                    title = `${Utils_1.QueryString.tags} (${title})`;
-                }
-                saveAs(blob, title + ".zip");
-                setLabel();
-            });
-        }
-        Main.doDownloadZip = doDownloadZip;
-        function setLabel(str = "Download all your fetishes") {
-            document.getElementById("fetishAnchor").innerText = str;
-        }
-        Main.setLabel = setLabel;
-        function init() {
-            if (_isInit) {
-                return;
             }
-            buildUI();
-            function buildUI() {
-                function displayOptions(bool) {
-                    let opParent = document.getElementById("fetishDownloadOptions").parentElement;
-                    opParent.style.display = bool ? "inline" : "none";
-                }
-                let uiMaker = UI_1.UIFactory.getUI(document);
-                uiMaker.createUI();
-                setLabel();
-                let idDownloading = false;
-                let anchor = document.getElementById("fetishAnchor");
-                anchor.addEventListener("click", async (e) => {
-                    if (idDownloading) {
-                        return;
-                    }
-                    if (_isInit) {
-                        doDownloadZip(_images);
-                        return;
-                    }
-                    let options = document.getElementById("fetishDownloadOptions");
-                    displayOptions(false);
-                    idDownloading = true;
-                    setLabel("Parsing pages... Please wait");
-                    let site = FetishSite_1.FetishSiteFactory.getSite(window.document);
-                    let pages = await site.pages;
-                    for (let page of pages) {
-                        _images = _images.concat(page.images);
-                    }
-                    setLabel(`Click to download ${_images.length} images`);
-                    let inEvent = false;
-                    let awComp;
-                    function createOptionsModal() {
-                        let id = "fetishDownloadOptionsModal";
-                        let modal = Utils_1.DomUtil.createModal({
-                            id: id,
-                            body: (function () {
-                                let html = "";
-                                html += '<label for="tagInput">Exclude tags: </label>';
-                                html += '<input id="tagInput" />';
-                                html += "<div class='filterOptionSection' data-type='exclude' id='excludeFilterSection'></div>";
-                                return html;
-                            }()),
-                            title: "Download Options",
-                            modalBodyStyle: {
-                                "height": "500px",
-                                "overflow": "auto"
-                            },
-                            footer: `<button class="button blackButton fetishOptionsConfirm apply">Apply</button>`
-                        });
-                        let exists = document.getElementById(id) !== null;
-                        if (exists) {
-                            document.getElementById(id).remove();
-                        }
-                        let el = document.body;
-                        el.insertAdjacentElement("beforeend", modal);
-                        modal.getElementsByClassName("fetishOptionsConfirm")[0].addEventListener("click", evt => {
-                            setLabel(`Click to download ${_images.length} images`);
-                            let filters = {
-                                excludeTags: []
-                            };
-                            // build filters
-                            modal.querySelectorAll(".filterOptionSection").forEach(section => {
-                                let el = section;
-                                let type = el.dataset.type;
-                                switch (type) {
-                                    case "exclude":
-                                        el.querySelectorAll(".badges").forEach(badge => {
-                                            let badgeEl = badge;
-                                            let toExclude = badgeEl.dataset.value;
-                                            filters.excludeTags.push(toExclude);
-                                        });
-                                        break;
-                                }
-                            });
-                        });
-                    }
-                    createOptionsModal();
-                    let hansBind = false;
-                    let downloadOptionsCallBack = () => {
-                        Utils_1.DomUtil.openModal(document.getElementById("fetishDownloadOptionsModal"));
-                        if (hansBind) {
-                            return;
-                        }
-                        let tags = new Set();
-                        for (let im of _images) {
-                            for (let tag of im.tags) {
-                                tags.add(tag);
-                            }
-                        }
-                        let input = document.getElementById("tagInput");
-                        awComp = new Awesomplete(input, {
-                            list: [...tags],
-                            replace: function (suggestion) {
-                                // @ts-ignore
-                                this.input.value = "";
-                            }
-                        });
-                        let tagSelect = (ev) => {
-                            let excludedTags = new Set();
-                            // @ts-ignore
-                            let applied = ev.text;
-                            // @ts-ignore
-                            let v = applied.value;
-                            let tagArr = [...tags];
-                            if (!tagArr.includes(v)) {
-                                return;
-                            }
-                            let e = document.getElementById("excludeFilterSection");
-                            let html = `<span class="badge" data-value="${v}">${v} <span class="optionDelete">&times;</span></span>`;
-                            let createdHtml = Utils_1.DomUtil.createElementFromHTML(html);
-                            createdHtml.querySelector(".optionDelete").addEventListener("click", e => {
-                                e.target.parentElement.remove();
-                            });
-                            e.insertAdjacentElement("beforeend", createdHtml);
-                        };
-                        input.addEventListener("awesomplete-select", tagSelect);
-                        hansBind = true;
-                    };
-                    let batchLimit = 250;
-                    options.addEventListener("click", downloadOptionsCallBack);
-                    displayOptions(true);
-                    let clickDownloadCallBack = async () => {
-                        displayOptions(false);
-                        if (inEvent) {
-                            return;
-                        }
-                        try {
-                            inEvent = true;
-                            await ImageLoader_1.ImageLoader.loadImages(_images, batchLimit);
-                            if (ImageLoader_1.ImageLoader.isBatch && ImageLoader_1.ImageLoader.batch.length > 0) {
-                                // download the rest of the batch
-                                await doDownloadZip(ImageLoader_1.ImageLoader.batch, "final");
-                                // init is not true, as batches remove images as they are downloaded
-                            }
-                            else {
-                                await doDownloadZip(_images);
-                                _isInit = true;
-                            }
-                        }
-                        finally {
-                            anchor.removeEventListener("click", clickDownloadCallBack);
-                            options.removeEventListener("click", downloadOptionsCallBack);
-                            inEvent = false;
-                            idDownloading = false;
-                        }
-                    };
-                    anchor.addEventListener("click", clickDownloadCallBack);
-                });
+            return retArr;
+        }
+        _parseContainer(el) {
+            let url;
+            let res;
+            let title;
+            let tags;
+            let tagForTitle = el.getElementsByClassName("inner")[0];
+            let aNameTag = tagForTitle.firstChild;
+            let infoTag = el.getElementsByClassName("directlink")[0];
+            let tagInfo = aNameTag.firstChild;
+            url = infoTag.href;
+            res = infoTag.getElementsByClassName("directlink-res")[0].innerHTML;
+            title = `${aNameTag.href.substr(aNameTag.href.lastIndexOf('/') + 1)}.${url.split(".").pop()}`;
+            let tagInfoString = tagInfo.title;
+            let strSplit = tagInfoString.split(" ");
+            let slice = strSplit.slice(strSplit.indexOf("Tags:") + 1);
+            if (slice.length === 0) {
+                tags = [];
             }
+            else {
+                slice.splice(slice.indexOf(":") - 1);
+                tags = slice;
+            }
+            return {
+                url: url,
+                res: res,
+                title: title,
+                tags: tags
+            };
         }
-        Main.init = init;
-        function filter(filterObject, image) {
-            return [];
-        }
-    })(Main = exports.Main || (exports.Main = {}));
-    Main.init();
+    }
+    exports.KonachanParser = KonachanParser;
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 
 /***/ }),
 
-/***/ "./src/UI.ts":
-/*!*******************!*\
-  !*** ./src/UI.ts ***!
-  \*******************/
+/***/ "./src/site/FetishSite.ts":
+/*!********************************!*\
+  !*** ./src/site/FetishSite.ts ***!
+  \********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ./Utils */ "./src/Utils.ts"), __webpack_require__(/*! ./IFetishSite */ "./src/IFetishSite.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, Utils_1, IFetishSite_1) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    var UIFactory;
-    (function (UIFactory) {
-        function getUI(doc) {
-            switch (Utils_1.SiteUtils.getSite(doc)) {
-                case IFetishSite_1.SITES.KONACHAN:
-                    return new KonaChanUi(doc);
-            }
-        }
-        UIFactory.getUI = getUI;
-    })(UIFactory = exports.UIFactory || (exports.UIFactory = {}));
-    class AbstractUI {
+    class FetishSite {
         constructor(doc) {
             this.doc = doc;
         }
     }
-    class KonaChanUi extends AbstractUI {
-        constructor() {
-            super(...arguments);
-            this.ulSideBar = this.doc.getElementById("subnavbar");
-        }
-        createLi() {
-            let node = this.doc.createElement("LI");
-            this.ulSideBar.appendChild(node);
-            return node;
-        }
-        createUI() {
-            function makeDoDownload() {
-                let node = this.createLi();
-                let textnode = this.doc.createTextNode("");
-                let aTag = this.doc.createElement("a");
-                aTag.id = "fetishAnchor";
-                aTag.appendChild(textnode);
-                aTag.href = "#";
-                node.appendChild(aTag);
-            }
-            function makeDownloadOptionsTag() {
-                let node = this.createLi();
-                node.style.display = "none";
-                let textnode = this.doc.createTextNode("Download Options");
-                let aTag = this.doc.createElement("a");
-                aTag.id = "fetishDownloadOptions";
-                aTag.appendChild(textnode);
-                aTag.href = "#";
-                aTag.innerText = "Download Options";
-                node.appendChild(aTag);
-            }
-            makeDoDownload.call(this);
-            makeDownloadOptionsTag.call(this);
-        }
-    }
-    exports.KonaChanUi = KonaChanUi;
+    exports.FetishSite = FetishSite;
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 
 /***/ }),
 
-/***/ "./src/Utils.ts":
-/*!**********************!*\
-  !*** ./src/Utils.ts ***!
-  \**********************/
+/***/ "./src/site/IFetishSite.ts":
+/*!*********************************!*\
+  !*** ./src/site/IFetishSite.ts ***!
+  \*********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ./IFetishSite */ "./src/IFetishSite.ts"), __webpack_require__(/*! ./css/modal.css */ "./src/css/modal.css")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, IFetishSite_1) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var SITES;
+    (function (SITES) {
+        SITES["KONACHAN"] = "konachan";
+    })(SITES = exports.SITES || (exports.SITES = {}));
+}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ "./src/site/impl/KonaChan.ts":
+/*!***********************************!*\
+  !*** ./src/site/impl/KonaChan.ts ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ../../model/FetishPage */ "./src/model/FetishPage.ts"), __webpack_require__(/*! ../../Main */ "./src/Main.ts"), __webpack_require__(/*! ../../utils/Utils */ "./src/utils/Utils.ts"), __webpack_require__(/*! ../IFetishSite */ "./src/site/IFetishSite.ts"), __webpack_require__(/*! ../FetishSite */ "./src/site/FetishSite.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, FetishPage_1, Main_1, Utils_1, IFetishSite_1, FetishSite_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class KonaChan extends FetishSite_1.FetishSite {
+        get pages() {
+            async function load(urls) {
+                let count = 0;
+                let arr = [];
+                for (let url of urls) {
+                    let response = await fetch(url);
+                    let html = await response.text();
+                    count++;
+                    let domParser = new DOMParser();
+                    let doc = domParser.parseFromString(html, "text/html");
+                    let fe = new FetishPage_1.FetishPage(doc, this.site);
+                    let percent = Math.floor(100 * count / urls.length);
+                    Main_1.Main.setLabel(`Parsing pages ${percent.toString()}% done`);
+                    arr.push(fe);
+                }
+                arr.push(new FetishPage_1.FetishPage(this.doc, this.site));
+                return arr;
+            }
+            let allPages = this.doc.querySelectorAll("#paginator a:not(.next_page):not(.previous_page)");
+            let urls = [];
+            if (allPages.length > 0) {
+                let arrOfPageA = Array.from(allPages);
+                let firstPage = arrOfPageA[0];
+                let lastPage = arrOfPageA[arrOfPageA.length - 1];
+                let firstPageNumber = Number.parseInt(firstPage.text);
+                let lastPageNumber = Number.parseInt(lastPage.text);
+                let rangeBetween = Utils_1.MathUtil.range(firstPageNumber, lastPageNumber);
+                let baseUrl = window.location.href;
+                let currentPage = Utils_1.QueryString.page === undefined ? 1 : Utils_1.QueryString.page;
+                for (let i = 0; i < rangeBetween.length; i++) {
+                    let num = String(rangeBetween[i]);
+                    if (num == currentPage) {
+                        continue;
+                    }
+                    let newUrl = Utils_1.AjaxUtils.addParameter(baseUrl, "page", num.toString(), true);
+                    urls.push(newUrl);
+                }
+            }
+            return load.call(this, urls);
+        }
+        get site() {
+            return IFetishSite_1.SITES.KONACHAN;
+        }
+    }
+    exports.KonaChan = KonaChan;
+}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ "./src/utils/Utils.ts":
+/*!****************************!*\
+  !*** ./src/utils/Utils.ts ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ../site/IFetishSite */ "./src/site/IFetishSite.ts"), __webpack_require__(/*! ../css/modal.css */ "./src/css/modal.css")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, IFetishSite_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var HTTP_METHOD;
@@ -2905,60 +3096,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     exports.ObjectUtil = ObjectUtil;
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ }),
-
-/***/ "./src/css/custom.css":
-/*!****************************!*\
-  !*** ./src/css/custom.css ***!
-  \****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var content = __webpack_require__(/*! !../../node_modules/css-loader/dist/cjs.js!./custom.css */ "./node_modules/css-loader/dist/cjs.js!./src/css/custom.css");
-
-if (typeof content === 'string') {
-  content = [[module.i, content, '']];
-}
-
-var options = {}
-
-options.insert = "head";
-options.singleton = false;
-
-var update = __webpack_require__(/*! ../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js")(content, options);
-
-if (content.locals) {
-  module.exports = content.locals;
-}
-
-
-/***/ }),
-
-/***/ "./src/css/modal.css":
-/*!***************************!*\
-  !*** ./src/css/modal.css ***!
-  \***************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var content = __webpack_require__(/*! !../../node_modules/css-loader/dist/cjs.js!./modal.css */ "./node_modules/css-loader/dist/cjs.js!./src/css/modal.css");
-
-if (typeof content === 'string') {
-  content = [[module.i, content, '']];
-}
-
-var options = {}
-
-options.insert = "head";
-options.singleton = false;
-
-var update = __webpack_require__(/*! ../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js")(content, options);
-
-if (content.locals) {
-  module.exports = content.locals;
-}
 
 
 /***/ }),

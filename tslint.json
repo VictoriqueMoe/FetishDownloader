@@ -7,7 +7,6 @@
       "member-variable-declaration",
       "property-declaration"],
     "no-default-export": true,
-    "member-access": [true, "check-accessor", "check-parameter-property"],
     "semicolon": [true, "always"]
   }
 }
