@@ -5,6 +5,6 @@ export interface IFetishSite {
     readonly site:SITES;
 }
 export enum SITES{
-    KONACHAN= "konachan",
+    KONACHAN = "konachan",
 }
 
