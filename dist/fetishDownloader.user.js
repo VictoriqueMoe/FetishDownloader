@@ -9,7 +9,7 @@
 // @grant        none
 // @run-at       document-idle
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js
-// @require      https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js
+// @require      https://cdn.jsdelivr.net/npm/file-saver@2.0.2/dist/FileSaver.min.js
 // @icon         https://i.imgur.com/nx5ejHb.png
 // @license      MIT
 // ==/UserScript==
