@@ -15,9 +15,6 @@ export module Main {
     let _isInit: boolean = false;
     let _images: FetishImage[] = [];
     let _filtered: FetishImage[] = [];
-    // type FilterObject = {
-    //     excludeTags?: string[],
-    // };
 
     type FilterObject = { [index: string]: string[] };
 
@@ -27,7 +24,7 @@ export module Main {
         for (let img of files) {
             zip.file(img.title, img.image);
         }
-        return zip.generateAsync({type: "blob"}).then(function (blob: Blob): void {
+        return zip.generateAsync({type: "blob"}).then(blob => {
             if (!title) {
                 title = QueryString.tags;
             } else {
@@ -88,13 +85,13 @@ export module Main {
                     let id = "fetishDownloadOptionsModal";
                     let modal = DomUtil.createModal({
                         id: id,
-                        body: (function (): string {
+                        body: (((): string => {
                             let html: string = "";
                             html += '<label for="tagInput">Exclude tags: </label>';
                             html += '<input id="tagInput" />';
                             html += "<div class='filterOptionSection' data-type='exclude' id='excludeFilterSection'></div>";
                             return html;
-                        }()),
+                        })()),
                         title: "Download Options",
                         modalBodyStyle: {
                             "height": "500px",
@@ -217,16 +214,17 @@ export module Main {
             let tagsForImage = image.tags;
             outer:
                 for (let filterType in filterObject) {
-                    let arrayOfSelectedTags = filterObject[filterType];
-                    for (let selectedTag of arrayOfSelectedTags) {
-                        if (tagsForImage.indexOf(selectedTag) > -1) {
-                            continue outer;
+                    if (filterObject.hasOwnProperty(filterType)) {
+                        let arrayOfSelectedTags = filterObject[filterType];
+                        for (let selectedTag of arrayOfSelectedTags) {
+                            if (tagsForImage.indexOf(selectedTag) > -1) {
+                                continue outer;
+                            }
                         }
+                        newArray.push(image);
                     }
-                    newArray.push(image);
                 }
         }
-
         return newArray;
     }
 }

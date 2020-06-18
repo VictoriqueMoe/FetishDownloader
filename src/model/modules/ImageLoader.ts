@@ -40,6 +40,7 @@ export module ImageLoader {
                                     ofString++;
                                 }
                                 let ofStr: string = String(ofString);
+
                                 await Main.doDownloadZip(batch, `${batchNum} of ${ofStr}`);
                                 for (let i: number = 0; i < batch.length; i++) {
                                     batch[i].unloadImage();
