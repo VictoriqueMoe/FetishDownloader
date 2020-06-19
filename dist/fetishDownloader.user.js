@@ -2017,6 +2017,7 @@ module.exports = g;
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! utils/Utils */ "./src/utils/Utils.ts"), __webpack_require__(/*! JSZip */ "JSZip"), __webpack_require__(/*! Awesomplete */ "./node_modules/Awesomplete/awesomplete.js"), __webpack_require__(/*! ./model/modules/ImageLoader */ "./src/model/modules/ImageLoader.ts"), __webpack_require__(/*! ./factory/FetishSiteFactory */ "./src/factory/FetishSiteFactory.ts"), __webpack_require__(/*! ./factory/UIFactory */ "./src/factory/UIFactory.ts"), __webpack_require__(/*! awesomplete/awesomplete.base.css */ "./node_modules/awesomplete/awesomplete.base.css"), __webpack_require__(/*! awesomplete/awesomplete.css */ "./node_modules/awesomplete/awesomplete.css"), __webpack_require__(/*! awesomplete/awesomplete.theme.css */ "./node_modules/awesomplete/awesomplete.theme.css"), __webpack_require__(/*! css/custom.css */ "./src/css/custom.css")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, Utils_1, JSZip, Awesomplete, ImageLoader_1, FetishSiteFactory_1, UIFactory_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.Main = void 0;
     var Main;
     (function (Main) {
         let _isInit = false;
@@ -2028,7 +2029,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             for (let img of files) {
                 zip.file(img.title, img.image);
             }
-            return zip.generateAsync({ type: "blob" }).then(function (blob) {
+            return zip.generateAsync({ type: "blob" }).then(blob => {
                 if (!title) {
                     title = Utils_1.QueryString.tags;
                 }
@@ -2085,13 +2086,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                         let id = "fetishDownloadOptionsModal";
                         let modal = Utils_1.DomUtil.createModal({
                             id: id,
-                            body: (function () {
+                            body: ((() => {
                                 let html = "";
                                 html += '<label for="tagInput">Exclude tags: </label>';
                                 html += '<input id="tagInput" />';
                                 html += "<div class='filterOptionSection' data-type='exclude' id='excludeFilterSection'></div>";
                                 return html;
-                            }()),
+                            })()),
                             title: "Download Options",
                             modalBodyStyle: {
                                 "height": "500px",
@@ -2209,13 +2210,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             for (let image of _images) {
                 let tagsForImage = image.tags;
                 outer: for (let filterType in filterObject) {
-                    let arrayOfSelectedTags = filterObject[filterType];
-                    for (let selectedTag of arrayOfSelectedTags) {
-                        if (tagsForImage.indexOf(selectedTag) > -1) {
-                            continue outer;
+                    if (filterObject.hasOwnProperty(filterType)) {
+                        let arrayOfSelectedTags = filterObject[filterType];
+                        for (let selectedTag of arrayOfSelectedTags) {
+                            if (tagsForImage.indexOf(selectedTag) > -1) {
+                                continue outer;
+                            }
                         }
+                        newArray.push(image);
                     }
-                    newArray.push(image);
                 }
             }
             return newArray;
@@ -2296,6 +2299,7 @@ module.exports = content.locals || {};
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ../site/IFetishSite */ "./src/site/IFetishSite.ts"), __webpack_require__(/*! ../utils/Utils */ "./src/utils/Utils.ts"), __webpack_require__(/*! ../site/impl/KonaChan */ "./src/site/impl/KonaChan.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, IFetishSite_1, Utils_1, KonaChan_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.FetishSiteFactory = void 0;
     var FetishSiteFactory;
     (function (FetishSiteFactory) {
         function getSite(doc) {
@@ -2322,6 +2326,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ../utils/Utils */ "./src/utils/Utils.ts"), __webpack_require__(/*! ../site/IFetishSite */ "./src/site/IFetishSite.ts"), __webpack_require__(/*! ../model/UI/impl/KonaChanUi */ "./src/model/UI/impl/KonaChanUi.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, Utils_1, IFetishSite_1, KonaChanUi_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.UIFactory = void 0;
     var UIFactory;
     (function (UIFactory) {
         function getUI(doc) {
@@ -2348,6 +2353,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ../site/IFetishSite */ "./src/site/IFetishSite.ts"), __webpack_require__(/*! ../parser/impl/FetishDocumentParser */ "./src/parser/impl/FetishDocumentParser.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, IFetishSite_1, FetishDocumentParser_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.FetishPage = void 0;
     class FetishPage {
         constructor(doc, site) {
             this._imageCahce = [];
@@ -2383,6 +2389,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.AbstractUI = void 0;
     class AbstractUI {
         constructor(doc) {
             this.doc = doc;
@@ -2405,6 +2412,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ../AbstractUI */ "./src/model/UI/AbstractUI.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, AbstractUI_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.KonaChanUi = void 0;
     class KonaChanUi extends AbstractUI_1.AbstractUI {
         constructor() {
             super(...arguments);
@@ -2457,6 +2465,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! utils/Utils */ "./src/utils/Utils.ts"), __webpack_require__(/*! js-sha256 */ "./node_modules/js-sha256/src/sha256.js")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, Utils_1, js_sha256_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.FetishImage = void 0;
     class FetishImage {
         constructor(container) {
             this._res = container.res;
@@ -2536,13 +2545,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ../../Main */ "./src/Main.ts"), __webpack_require__(/*! ../../utils/Utils */ "./src/utils/Utils.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, Main_1, Utils_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ImageLoader = void 0;
     var ImageLoader;
     (function (ImageLoader) {
-        async function delay(ms) {
-            return new Promise((resolve) => {
-                setTimeout(resolve, ms);
-            });
-        }
         async function loadImages(_images, batchLimit) {
             let count = 0;
             ImageLoader.isBatch = _images.length > batchLimit;
@@ -2555,7 +2560,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                     if (!im.isInit) {
                         try {
                             count++;
-                            await delay(50);
+                            await Utils_1.delay(50);
                             await im.loadImage();
                             Main_1.Main.setLabel(`${count} out of ${images.length} done`);
                             if (ImageLoader.isBatch) {
@@ -2568,6 +2573,12 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                                     }
                                     let ofStr = String(ofString);
                                     await Main_1.Main.doDownloadZip(ImageLoader.batch, `${batchNum} of ${ofStr}`);
+                                    let leftToDownload = images.length - count;
+                                    if (leftToDownload < 15) {
+                                        Main_1.Main.setLabel("5 second Cool down after download, Please accept the download request");
+                                        await Utils_1.delay(5000);
+                                        Main_1.Main.setLabel(`${count} out of ${images.length} done`);
+                                    }
                                     for (let i = 0; i < ImageLoader.batch.length; i++) {
                                         ImageLoader.batch[i].unloadImage();
                                     }
@@ -2590,7 +2601,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                                 Utils_1.ObjectUtil.removeObjectFromArray(im, failedImages);
                             }
                             else {
-                                await delay(4000);
+                                await Utils_1.delay(4000);
                             }
                         }
                     }
@@ -2622,6 +2633,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! model/impl/FetishImage */ "./src/model/impl/FetishImage.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, FetishImage_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.KonachanParser = void 0;
     class KonachanParser {
         parse(doc) {
             let list = doc.getElementById("post-list-posts");
@@ -2686,6 +2698,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.FetishSite = void 0;
     class FetishSite {
         constructor(doc) {
             this.doc = doc;
@@ -2708,6 +2721,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.SITES = void 0;
     var SITES;
     (function (SITES) {
         SITES["KONACHAN"] = "konachan";
@@ -2728,6 +2742,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ../../model/FetishPage */ "./src/model/FetishPage.ts"), __webpack_require__(/*! ../../Main */ "./src/Main.ts"), __webpack_require__(/*! ../../utils/Utils */ "./src/utils/Utils.ts"), __webpack_require__(/*! ../IFetishSite */ "./src/site/IFetishSite.ts"), __webpack_require__(/*! ../FetishSite */ "./src/site/FetishSite.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, FetishPage_1, Main_1, Utils_1, IFetishSite_1, FetishSite_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.KonaChan = void 0;
     class KonaChan extends FetishSite_1.FetishSite {
         get pages() {
             async function load(urls) {
@@ -2790,6 +2805,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ../site/IFetishSite */ "./src/site/IFetishSite.ts"), __webpack_require__(/*! ../css/modal.css */ "./src/css/modal.css")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, IFetishSite_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ObjectUtil = exports.DomUtil = exports.SiteUtils = exports.MathUtil = exports.AjaxUtils = exports.delay = exports.QueryString = exports.HTTP_METHOD = void 0;
     var HTTP_METHOD;
     (function (HTTP_METHOD) {
         HTTP_METHOD["GET"] = "GET";
@@ -2817,6 +2833,12 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         }
         return query_string;
     })();
+    async function delay(ms) {
+        return new Promise((resolve) => {
+            setTimeout(resolve, ms);
+        });
+    }
+    exports.delay = delay;
     class AjaxUtils {
         static addParameter(url, parameterName, parameterValue, atStart = false) {
             let replaceDuplicates = true;

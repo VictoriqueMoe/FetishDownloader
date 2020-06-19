@@ -27,6 +27,13 @@ export let QueryString: { [key: string]: any } = (() => {
     return query_string;
 })();
 
+
+export async function delay(ms: number): Promise<void> {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
+
 export class AjaxUtils {
 
     public static addParameter(url: string, parameterName: string, parameterValue: string, atStart: boolean = false): string {

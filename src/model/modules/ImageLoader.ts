@@ -1,16 +1,10 @@
 import {FetishImage} from "../impl/FetishImage";
 import {Main} from "../../Main";
-import {ObjectUtil} from "../../utils/Utils";
+import {delay, ObjectUtil} from "../../utils/Utils";
 
 export module ImageLoader {
     export let isBatch: boolean;
     export let batch: FetishImage[];
-
-    async function delay(ms: number): Promise<void> {
-        return new Promise((resolve) => {
-            setTimeout(resolve, ms);
-        });
-    }
 
     export async function loadImages(_images: FetishImage[], batchLimit: number): Promise<void> {
         let count = 0;
@@ -42,6 +36,12 @@ export module ImageLoader {
                                 let ofStr: string = String(ofString);
 
                                 await Main.doDownloadZip(batch, `${batchNum} of ${ofStr}`);
+                                let leftToDownload = images.length - count;
+                                if(leftToDownload < 15){
+                                    Main.setLabel("5 second Cool down after download, Please accept the download request");
+                                    await delay(5000);
+                                    Main.setLabel(`${count} out of ${images.length} done`);
+                                }
                                 for (let i: number = 0; i < batch.length; i++) {
                                     batch[i].unloadImage();
                                 }
