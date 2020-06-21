@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Fetish Downloader
+// @name         Fetish Downloader (konachan auto downloader)
 // @namespace    victorique.moe
 // @version      2.5.2
 // @description  Download all your lovely fetishes (no furries)
