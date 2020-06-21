@@ -2739,7 +2739,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ../../model/FetishPage */ "./src/model/FetishPage.ts"), __webpack_require__(/*! ../../Main */ "./src/Main.ts"), __webpack_require__(/*! ../../utils/Utils */ "./src/utils/Utils.ts"), __webpack_require__(/*! ../IFetishSite */ "./src/site/IFetishSite.ts"), __webpack_require__(/*! ../FetishSite */ "./src/site/FetishSite.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, FetishPage_1, Main_1, Utils_1, IFetishSite_1, FetishSite_1) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ../../model/FetishPage */ "./src/model/FetishPage.ts"), __webpack_require__(/*! ../../utils/Utils */ "./src/utils/Utils.ts"), __webpack_require__(/*! ../IFetishSite */ "./src/site/IFetishSite.ts"), __webpack_require__(/*! ../FetishSite */ "./src/site/FetishSite.ts"), __webpack_require__(/*! ../../Main */ "./src/Main.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, FetishPage_1, Utils_1, IFetishSite_1, FetishSite_1, Main_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.KonaChan = void 0;
@@ -2748,19 +2748,29 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             async function load(urls) {
                 let count = 0;
                 let arr = [];
-                for (let url of urls) {
-                    let response = await fetch(url);
-                    let html = await response.text();
-                    count++;
-                    let domParser = new DOMParser();
-                    let doc = domParser.parseFromString(html, "text/html");
-                    let fe = new FetishPage_1.FetishPage(doc, this.site);
-                    let percent = Math.floor(100 * count / urls.length);
-                    Main_1.Main.setLabel(`Parsing pages ${percent.toString()}% done`);
-                    arr.push(fe);
+                let pArray = urls.map(async (url) => {
+                    await Utils_1.delay(100);
+                    return fetch(url);
+                });
+                for (let p of pArray) {
+                    p.then(() => {
+                        count++;
+                        let percent = Math.floor(100 * count / urls.length);
+                        Main_1.Main.setLabel(`Parsing pages ${percent.toString()}% done`);
+                    });
                 }
-                arr.push(new FetishPage_1.FetishPage(this.doc, this.site));
-                return arr;
+                return Promise.all(pArray).then(responseArray => {
+                    return Promise.all(responseArray.map(resp => resp.text()));
+                }).then(htmlArray => {
+                    for (let html of htmlArray) {
+                        let domParser = new DOMParser();
+                        let doc = domParser.parseFromString(html, "text/html");
+                        let fe = new FetishPage_1.FetishPage(doc, this.site);
+                        arr.push(fe);
+                    }
+                    arr.push(new FetishPage_1.FetishPage(this.doc, this.site));
+                    return arr;
+                });
             }
             let allPages = this.doc.querySelectorAll("#paginator a:not(.next_page):not(.previous_page)");
             let urls = [];

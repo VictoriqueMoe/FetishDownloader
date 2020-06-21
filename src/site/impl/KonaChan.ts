@@ -1,9 +1,9 @@
 import {IFetishPage} from "../../model/IFetishPage";
 import {FetishPage} from "../../model/FetishPage";
-import {Main} from "../../Main";
-import {AjaxUtils, MathUtil, QueryString} from "../../utils/Utils";
+import {AjaxUtils, delay, MathUtil, QueryString} from "../../utils/Utils";
 import {SITES} from "../IFetishSite";
 import {FetishSite} from "../FetishSite";
+import {Main} from "../../Main";
 
 export class KonaChan extends FetishSite {
 
@@ -11,19 +11,30 @@ export class KonaChan extends FetishSite {
         async function load(this: KonaChan, urls: string[]): Promise<IFetishPage[]> {
             let count: number = 0;
             let arr: IFetishPage[] = [];
-            for (let url of urls) {
-                let response = await fetch(url);
-                let html = await response.text();
-                count++;
-                let domParser: DOMParser = new DOMParser();
-                let doc: Document = domParser.parseFromString(html, "text/html");
-                let fe = new FetishPage(doc, this.site);
-                let percent: number = Math.floor(100 * count / urls.length);
-                Main.setLabel(`Parsing pages ${percent.toString()}% done`);
-                arr.push(fe);
+
+            let pArray = urls.map(async url => {
+                await delay(100);
+                return fetch(url);
+            });
+            for (let p of pArray) {
+                p.then(() => {
+                    count++;
+                    let percent: number = Math.floor(100 * count / urls.length);
+                    Main.setLabel(`Parsing pages ${percent.toString()}% done`);
+                });
             }
-            arr.push(new FetishPage(this.doc, this.site));
-            return arr;
+            return Promise.all(pArray).then(responseArray => {
+                return Promise.all(responseArray.map(resp => resp.text()));
+            }).then(htmlArray => {
+                for (let html of htmlArray) {
+                    let domParser: DOMParser = new DOMParser();
+                    let doc: Document = domParser.parseFromString(html, "text/html");
+                    let fe = new FetishPage(doc, this.site);
+                    arr.push(fe);
+                }
+                arr.push(new FetishPage(this.doc, this.site));
+                return arr;
+            });
         }
 
         let allPages: NodeListOf<HTMLAnchorElement> = this.doc.querySelectorAll("#paginator a:not(.next_page):not(.previous_page)");
