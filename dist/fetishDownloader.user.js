@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Fetish Downloader
 // @namespace    victorique.moe
-// @version      2.5.0
+// @version      2.5.1
 // @description  Download all your lovely fetishes (no furries)
 // @author       Victorique
 // @match        https://konachan.net/post?*
@@ -2023,6 +2023,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         let _isInit = false;
         let _images = [];
         let _filtered = [];
+        let batchLimit = 1000;
         function doDownloadZip(files, title) {
             setLabel("compressing");
             let zip = new JSZip();
@@ -2152,13 +2153,11 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                             }
                         });
                         let tagSelect = (ev) => {
-                            let excludedTags = new Set();
                             // @ts-ignore
                             let applied = ev.text;
                             // @ts-ignore
                             let v = applied.value;
-                            let tagArr = [...tags];
-                            if (!tagArr.includes(v)) {
+                            if (!tags.has(v)) {
                                 return;
                             }
                             let e = document.getElementById("excludeFilterSection");
@@ -2172,7 +2171,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                         input.addEventListener("awesomplete-select", tagSelect);
                         hansBind = true;
                     };
-                    let batchLimit = 250;
                     options.addEventListener("click", downloadOptionsCallBack);
                     displayOptions(true);
                     let clickDownloadCallBack = async () => {
@@ -2468,10 +2466,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     exports.FetishImage = void 0;
     class FetishImage {
         constructor(container) {
+            this._actualImage = null;
             this._res = container.res;
             this._title = container.title;
             this._url = container.url;
-            this._isInit = false;
             this._tags = container.tags;
         }
         get res() {
@@ -2484,10 +2482,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             return this._title;
         }
         get isInit() {
-            return this._isInit;
+            return this._actualImage != null;
         }
         get image() {
-            if (!this._isInit) {
+            if (!this.isInit) {
                 throw new Error("Image has not been loaded yet");
             }
             return this._actualImage;
@@ -2496,7 +2494,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             return this._tags;
         }
         unloadImage() {
-            this._isInit = false;
             this._actualImage = null;
         }
         loadImage() {
@@ -2508,7 +2505,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                     reader.onerror = reader.onabort = reject;
                 });
             }
-            if (this._isInit) {
+            if (this.isInit) {
                 return Promise.resolve();
             }
             return Utils_1.AjaxUtils.loadImage(this.url).then(image => {
@@ -2524,7 +2521,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                     let extension = titleSplit.pop();
                     this._title = `${titleSplit.join("")}_${hashofImage}.${extension}`;
                 }
-                this._isInit = true;
             });
         }
     }
@@ -2645,13 +2641,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             for (let i = 0; i < childrenLi.length; i++) {
                 let e = childrenLi[i];
                 if (e.nodeType == Node.ELEMENT_NODE) {
-                    let containerInfo = this._parseContainer(e);
+                    let containerInfo = KonachanParser._parseContainer(e);
                     retArr.push(new FetishImage_1.FetishImage(containerInfo));
                 }
             }
             return retArr;
         }
-        _parseContainer(el) {
+        static _parseContainer(el) {
             let url;
             let res;
             let title;
@@ -2748,9 +2744,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             async function load(urls) {
                 let count = 0;
                 let arr = [];
-                let pArray = urls.map(async (url) => {
-                    await Utils_1.delay(100);
-                    return fetch(url).then(response => {
+                let pArray = urls.map(url => {
+                    return fetch(url).then(async (response) => {
                         let text = response.text();
                         count++;
                         let percent = Math.floor(100 * count / urls.length);

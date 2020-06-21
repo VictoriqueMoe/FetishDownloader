@@ -12,9 +12,8 @@ export class KonaChan extends FetishSite {
             let count: number = 0;
             let arr: IFetishPage[] = [];
 
-            let pArray = urls.map(async url => {
-                await delay(100);
-                return fetch(url).then(response => {
+            let pArray = urls.map(url => {
+                return fetch(url).then(async response => {
                     let text = response.text();
                     count++;
                     let percent: number = Math.floor(100 * count / urls.length);

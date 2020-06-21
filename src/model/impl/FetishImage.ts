@@ -7,14 +7,12 @@ export class FetishImage {
     private readonly _url: string;
     private readonly _tags: string[];
     private _title: string;
-    private _isInit: boolean;
-    private _actualImage: Blob;
+    private _actualImage: Blob = null;
 
     constructor(container: ImageContainerTyping) {
         this._res = container.res;
         this._title = container.title;
         this._url = container.url;
-        this._isInit = false;
         this._tags = container.tags;
     }
 
@@ -31,11 +29,11 @@ export class FetishImage {
     }
 
     public get isInit(): boolean {
-        return this._isInit;
+        return this._actualImage != null;
     }
 
     public get image(): Blob {
-        if (!this._isInit) {
+        if (!this.isInit) {
             throw new Error("Image has not been loaded yet");
         }
         return this._actualImage;
@@ -46,7 +44,6 @@ export class FetishImage {
     }
 
     public unloadImage(): void {
-        this._isInit = false;
         this._actualImage = null;
     }
 
@@ -60,7 +57,7 @@ export class FetishImage {
             });
         }
 
-        if (this._isInit) {
+        if (this.isInit) {
             return Promise.resolve();
         }
         return AjaxUtils.loadImage(this.url).then(image => {
@@ -76,7 +73,6 @@ export class FetishImage {
                 let extension = titleSplit.pop();
                 this._title = `${titleSplit.join("")}_${hashofImage}.${extension}`;
             }
-            this._isInit = true;
         });
     }
 }

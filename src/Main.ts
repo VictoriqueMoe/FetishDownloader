@@ -15,8 +15,10 @@ export module Main {
     let _isInit: boolean = false;
     let _images: FetishImage[] = [];
     let _filtered: FetishImage[] = [];
-
-    type FilterObject = { [index: string]: string[] };
+    let batchLimit = 1000;
+    type FilterObject = {
+        [index: string]: string[]
+    };
 
     export function doDownloadZip(files: FetishImage[], title?: string): Promise<void> {
         setLabel("compressing");
@@ -153,13 +155,11 @@ export module Main {
                         }
                     });
                     let tagSelect = (ev: Event) => {
-                        let excludedTags: Set<string> = new Set();
                         // @ts-ignore
                         let applied: Suggestion = ev.text;
                         // @ts-ignore
                         let v: string = applied.value;
-                        let tagArr = [...tags];
-                        if (!tagArr.includes(v)) {
+                        if (!tags.has(v)) {
                             return;
                         }
                         let e = document.getElementById("excludeFilterSection");
@@ -175,7 +175,6 @@ export module Main {
                     hansBind = true;
                 };
 
-                let batchLimit = 250;
                 options.addEventListener("click", downloadOptionsCallBack);
                 displayOptions(true);
                 let clickDownloadCallBack = async () => {

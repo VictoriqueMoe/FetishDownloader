@@ -13,14 +13,14 @@ export class KonachanParser implements IFetishDocumentParser {
         for (let i: number = 0; i < childrenLi.length; i++) {
             let e: HTMLLIElement = childrenLi[i];
             if (e.nodeType == Node.ELEMENT_NODE) {
-                let containerInfo: ImageContainerTyping = this._parseContainer(e);
+                let containerInfo: ImageContainerTyping = KonachanParser._parseContainer(e);
                 retArr.push(new FetishImage(containerInfo));
             }
         }
         return retArr;
     }
 
-    private _parseContainer(el: HTMLLIElement): ImageContainerTyping {
+    private static _parseContainer(el: HTMLLIElement): ImageContainerTyping {
         let url: string;
         let res: string;
         let title: string;
