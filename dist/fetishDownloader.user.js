@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Fetish Downloader
 // @namespace    victorique.moe
-// @version      2.0.0
+// @version      2.5.0
 // @description  Download all your lovely fetishes (no furries)
 // @author       Victorique
 // @match        https://konachan.net/post?*
@@ -2750,18 +2750,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                 let arr = [];
                 let pArray = urls.map(async (url) => {
                     await Utils_1.delay(100);
-                    return fetch(url);
-                });
-                for (let p of pArray) {
-                    p.then(() => {
+                    return fetch(url).then(response => {
+                        let text = response.text();
                         count++;
                         let percent = Math.floor(100 * count / urls.length);
                         Main_1.Main.setLabel(`Parsing pages ${percent.toString()}% done`);
+                        return text;
                     });
-                }
-                return Promise.all(pArray).then(responseArray => {
-                    return Promise.all(responseArray.map(resp => resp.text()));
-                }).then(htmlArray => {
+                });
+                return Promise.all(pArray).then(htmlArray => {
                     for (let html of htmlArray) {
                         let domParser = new DOMParser();
                         let doc = domParser.parseFromString(html, "text/html");

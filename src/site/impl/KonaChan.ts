@@ -14,18 +14,15 @@ export class KonaChan extends FetishSite {
 
             let pArray = urls.map(async url => {
                 await delay(100);
-                return fetch(url);
-            });
-            for (let p of pArray) {
-                p.then(() => {
+                return fetch(url).then(response => {
+                    let text = response.text();
                     count++;
                     let percent: number = Math.floor(100 * count / urls.length);
                     Main.setLabel(`Parsing pages ${percent.toString()}% done`);
+                    return text;
                 });
-            }
-            return Promise.all(pArray).then(responseArray => {
-                return Promise.all(responseArray.map(resp => resp.text()));
-            }).then(htmlArray => {
+            });
+            return Promise.all(pArray).then(htmlArray => {
                 for (let html of htmlArray) {
                     let domParser: DOMParser = new DOMParser();
                     let doc: Document = domParser.parseFromString(html, "text/html");
