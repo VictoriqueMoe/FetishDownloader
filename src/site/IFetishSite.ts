@@ -6,5 +6,6 @@ export interface IFetishSite {
 }
 export enum SITES{
     KONACHAN = "konachan",
+    LOLIBOORU = "lolibooru"
 }
 

@@ -1,11 +1,12 @@
 // ==UserScript==
-// @name         Fetish Downloader (konachan auto downloader)
+// @name         Fetish Downloader (konachan &lolibooru auto downloader)
 // @namespace    victorique.moe
-// @version      2.5.2
+// @version      3.0.0
 // @description  Download all your lovely fetishes (no furries)
 // @author       Victorique
 // @match        https://konachan.net/post?*
 // @match        https://konachan.com/post?*
+// @match        https://lolibooru.moe/post?*
 // @grant        none
 // @run-at       document-idle
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js
@@ -2294,7 +2295,7 @@ module.exports = content.locals || {};
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ../site/IFetishSite */ "./src/site/IFetishSite.ts"), __webpack_require__(/*! ../utils/Utils */ "./src/utils/Utils.ts"), __webpack_require__(/*! ../site/impl/KonaChan */ "./src/site/impl/KonaChan.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, IFetishSite_1, Utils_1, KonaChan_1) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ../site/IFetishSite */ "./src/site/IFetishSite.ts"), __webpack_require__(/*! ../utils/Utils */ "./src/utils/Utils.ts"), __webpack_require__(/*! ../site/impl/KonaChan */ "./src/site/impl/KonaChan.ts"), __webpack_require__(/*! ../site/impl/LoliBooru */ "./src/site/impl/LoliBooru.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, IFetishSite_1, Utils_1, KonaChan_1, LoliBooru_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.FetishSiteFactory = void 0;
@@ -2304,6 +2305,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             switch (Utils_1.SiteUtils.getSite(doc)) {
                 case IFetishSite_1.SITES.KONACHAN:
                     return new KonaChan_1.KonaChan(doc);
+                case IFetishSite_1.SITES.LOLIBOORU:
+                    return new LoliBooru_1.LoliBooru(doc);
             }
         }
         FetishSiteFactory.getSite = getSite;
@@ -2330,6 +2333,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         function getUI(doc) {
             switch (Utils_1.SiteUtils.getSite(doc)) {
                 case IFetishSite_1.SITES.KONACHAN:
+                case IFetishSite_1.SITES.LOLIBOORU:
                     return new KonaChanUi_1.KonaChanUi(doc);
             }
         }
@@ -2357,6 +2361,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             this._imageCahce = [];
             switch (site) {
                 case IFetishSite_1.SITES.KONACHAN:
+                case IFetishSite_1.SITES.LOLIBOORU:
                     this.fetishDocumentParser = new FetishDocumentParser_1.KonachanParser();
                     break;
             }
@@ -2721,6 +2726,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     var SITES;
     (function (SITES) {
         SITES["KONACHAN"] = "konachan";
+        SITES["LOLIBOORU"] = "lolibooru";
     })(SITES = exports.SITES || (exports.SITES = {}));
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -2735,11 +2741,63 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ../../model/FetishPage */ "./src/model/FetishPage.ts"), __webpack_require__(/*! ../../utils/Utils */ "./src/utils/Utils.ts"), __webpack_require__(/*! ../IFetishSite */ "./src/site/IFetishSite.ts"), __webpack_require__(/*! ../FetishSite */ "./src/site/FetishSite.ts"), __webpack_require__(/*! ../../Main */ "./src/Main.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, FetishPage_1, Utils_1, IFetishSite_1, FetishSite_1, Main_1) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ../IFetishSite */ "./src/site/IFetishSite.ts"), __webpack_require__(/*! ./MoeBooru */ "./src/site/impl/MoeBooru.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, IFetishSite_1, MoeBooru_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.KonaChan = void 0;
-    class KonaChan extends FetishSite_1.FetishSite {
+    class KonaChan extends MoeBooru_1.MoeBooru {
+        allPages() {
+            return this.doc.querySelectorAll("#paginator a:not(.next_page):not(.previous_page)");
+        }
+        get site() {
+            return IFetishSite_1.SITES.KONACHAN;
+        }
+    }
+    exports.KonaChan = KonaChan;
+}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ "./src/site/impl/LoliBooru.ts":
+/*!************************************!*\
+  !*** ./src/site/impl/LoliBooru.ts ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ./MoeBooru */ "./src/site/impl/MoeBooru.ts"), __webpack_require__(/*! ../IFetishSite */ "./src/site/IFetishSite.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, MoeBooru_1, IFetishSite_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.LoliBooru = void 0;
+    class LoliBooru extends MoeBooru_1.MoeBooru {
+        allPages() {
+            return this.doc.querySelectorAll("#paginator a:not(.nextPage):not(.previousPage)");
+        }
+        get site() {
+            return IFetishSite_1.SITES.LOLIBOORU;
+        }
+    }
+    exports.LoliBooru = LoliBooru;
+}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ "./src/site/impl/MoeBooru.ts":
+/*!***********************************!*\
+  !*** ./src/site/impl/MoeBooru.ts ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ../FetishSite */ "./src/site/FetishSite.ts"), __webpack_require__(/*! ../../Main */ "./src/Main.ts"), __webpack_require__(/*! ../../model/FetishPage */ "./src/model/FetishPage.ts"), __webpack_require__(/*! ../../utils/Utils */ "./src/utils/Utils.ts")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, FetishSite_1, Main_1, FetishPage_1, Utils_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.MoeBooru = void 0;
+    class MoeBooru extends FetishSite_1.FetishSite {
         get pages() {
             async function load(urls) {
                 let count = 0;
@@ -2764,7 +2822,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                     return arr;
                 });
             }
-            let allPages = this.doc.querySelectorAll("#paginator a:not(.next_page):not(.previous_page)");
+            let allPages = this.allPages();
             let urls = [];
             if (allPages.length > 0) {
                 let arrOfPageA = Array.from(allPages);
@@ -2786,11 +2844,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             }
             return load.call(this, urls);
         }
-        get site() {
-            return IFetishSite_1.SITES.KONACHAN;
-        }
     }
-    exports.KonaChan = KonaChan;
+    exports.MoeBooru = MoeBooru;
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 

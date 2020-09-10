@@ -150,7 +150,7 @@ export module SiteUtils {
     }
 }
 
-export class DomUtil {
+export class DomUtil  {
     /**
      * Create a modal with the given options
      * @param options

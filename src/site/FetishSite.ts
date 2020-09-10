@@ -9,4 +9,6 @@ export abstract class FetishSite implements IFetishSite {
     public abstract get pages(): Promise<IFetishPage[]>;
 
     public abstract get site(): SITES;
+
+    protected abstract allPages():NodeListOf<HTMLAnchorElement>;
 }

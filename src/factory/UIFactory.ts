@@ -7,6 +7,7 @@ export module UIFactory {
     export function getUI(doc: Document): UI {
         switch (SiteUtils.getSite(doc)) {
             case SITES.KONACHAN:
+            case SITES.LOLIBOORU:
                 return new KonaChanUi(doc);
         }
     }

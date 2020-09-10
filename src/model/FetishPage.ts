@@ -12,6 +12,7 @@ export class FetishPage implements IFetishPage {
     public constructor(doc: Document, site: SITES) {
         switch (site) {
             case SITES.KONACHAN:
+            case SITES.LOLIBOORU:
                 this.fetishDocumentParser = new KonachanParser();
                 break;
         }
