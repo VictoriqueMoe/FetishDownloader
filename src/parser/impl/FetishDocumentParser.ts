@@ -5,7 +5,7 @@ import {IFetishDocumentParser} from "../IFetishDocumentParser";
 export class KonachanParser implements IFetishDocumentParser {
     public parse(doc: HTMLDocument): FetishImage[] {
         let list = doc.getElementById("post-list-posts");
-        if(list == null){
+        if (list == null) {
             return [];
         }
         let childrenLi: NodeListOf<HTMLLIElement> = list.childNodes as NodeListOf<HTMLLIElement>;

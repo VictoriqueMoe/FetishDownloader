@@ -1,9 +1,4 @@
-import {IFetishPage} from "../../model/IFetishPage";
-import {FetishPage} from "../../model/FetishPage";
-import {AjaxUtils, delay, MathUtil, QueryString} from "../../utils/Utils";
 import {SITES} from "../IFetishSite";
-import {FetishSite} from "../FetishSite";
-import {Main} from "../../Main";
 import {MoeBooru} from "./MoeBooru";
 
 export class KonaChan extends MoeBooru {
