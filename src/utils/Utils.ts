@@ -99,7 +99,7 @@ export class AjaxUtils {
                 };
                 xhr.send();
             } catch (err) {
-                reject(err.message);
+                reject((err as any).message);
             }
         });
     }
@@ -150,7 +150,7 @@ export module SiteUtils {
     }
 }
 
-export class DomUtil  {
+export class DomUtil {
     /**
      * Create a modal with the given options
      * @param options

@@ -1,10 +1,10 @@
-import {FetishSite} from "../FetishSite";
-import {IFetishPage} from "../../model/IFetishPage";
-import {Main} from "../../Main";
-import {FetishPage} from "../../model/FetishPage";
-import {AjaxUtils, MathUtil, QueryString} from "../../utils/Utils";
+import {FetishSite} from "./FetishSite";
+import {IFetishPage} from "../model/IFetishPage";
+import {Main} from "../Main";
+import {FetishPage} from "../model/FetishPage";
+import {AjaxUtils, MathUtil, QueryString} from "../utils/Utils";
 
-export abstract class MoeBooru extends FetishSite{
+export abstract class MoeBooru extends FetishSite {
 
     public get pages(): Promise<IFetishPage[]> {
         async function load(this: MoeBooru, urls: string[]): Promise<IFetishPage[]> {
@@ -54,6 +54,10 @@ export abstract class MoeBooru extends FetishSite{
             }
         }
         return load.call(this, urls);
+    }
+
+    protected defaultQuerySelector(): NodeListOf<HTMLAnchorElement> {
+        return this.doc.querySelectorAll("#paginator a:not(.next_page):not(.previous_page)");
     }
 
 }

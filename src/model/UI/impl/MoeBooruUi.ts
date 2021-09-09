@@ -1,6 +1,6 @@
 import {AbstractUI} from "../AbstractUI";
 
-export class KonaChanUi extends AbstractUI {
+export class MoeBooruUi extends AbstractUI {
     private ulSideBar: HTMLUListElement = this.doc.getElementById("subnavbar") as HTMLUListElement;
 
     private createLi(): HTMLLIElement {
@@ -11,7 +11,7 @@ export class KonaChanUi extends AbstractUI {
 
     public buildUI(): void {
 
-        function makeDoDownload(this: KonaChanUi): void {
+        function makeDoDownload(this: MoeBooruUi): void {
             let node: HTMLLIElement = this.createLi();
             let textnode: Text = this.doc.createTextNode("");
             let aTag: HTMLAnchorElement = this.doc.createElement("a");
@@ -21,7 +21,7 @@ export class KonaChanUi extends AbstractUI {
             node.appendChild(aTag);
         }
 
-        function makeDownloadOptionsTag(this: KonaChanUi): void {
+        function makeDownloadOptionsTag(this: MoeBooruUi): void {
             let node: HTMLLIElement = this.createLi();
             node.style.display = "none";
             let textnode: Text = this.doc.createTextNode("Download Options");

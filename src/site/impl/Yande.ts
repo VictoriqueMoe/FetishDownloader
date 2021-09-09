@@ -1,13 +1,12 @@
-import {SITES} from "../IFetishSite";
 import {MoeBooru} from "../MoeBooru";
+import {SITES} from "../IFetishSite";
 
-export class KonaChan extends MoeBooru {
-
+export class Yande extends MoeBooru {
     protected allPages(): NodeListOf<HTMLAnchorElement> {
         return this.defaultQuerySelector();
     }
 
-    public get site(): SITES {
-        return SITES.KONACHAN;
+    get site(): SITES {
+        return SITES.YANDE;
     }
 }

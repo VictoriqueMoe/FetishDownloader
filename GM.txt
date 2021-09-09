@@ -1,12 +1,14 @@
 // ==UserScript==
 // @name         Fetish Downloader (konachan &lolibooru auto downloader)
 // @namespace    victorique.moe
-// @version      3.0.0
+// @version      3.5.0
 // @description  Download all your lovely fetishes (no furries)
 // @author       Victorique
 // @match        https://konachan.net/post?*
 // @match        https://konachan.com/post?*
 // @match        https://lolibooru.moe/post?*
+// @match        https://lolibooru.moe/post?*
+// @match        https://yande.re/post?*
 // @grant        none
 // @run-at       document-idle
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js

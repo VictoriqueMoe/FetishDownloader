@@ -2,7 +2,7 @@ import {FetishImage} from "model/impl/FetishImage";
 import {ImageContainerTyping} from "model/Typings";
 import {IFetishDocumentParser} from "../IFetishDocumentParser";
 
-export class KonachanParser implements IFetishDocumentParser {
+export class MoeBooruParser implements IFetishDocumentParser {
     public parse(doc: HTMLDocument): FetishImage[] {
         let list = doc.getElementById("post-list-posts");
         if (list == null) {
@@ -13,7 +13,7 @@ export class KonachanParser implements IFetishDocumentParser {
         for (let i: number = 0; i < childrenLi.length; i++) {
             let e: HTMLLIElement = childrenLi[i];
             if (e.nodeType == Node.ELEMENT_NODE) {
-                let containerInfo: ImageContainerTyping = KonachanParser._parseContainer(e);
+                let containerInfo: ImageContainerTyping = MoeBooruParser._parseContainer(e);
                 retArr.push(new FetishImage(containerInfo));
             }
         }

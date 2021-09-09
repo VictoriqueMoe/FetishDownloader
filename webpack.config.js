@@ -5,11 +5,13 @@ module.exports = env => {
     const webpack = require("webpack");
     const fs = require('fs');
     const METADATA = fs.readFileSync('./GM.txt', 'utf8');
-
+    const {development} = env;
+    const devtool = development ? 'hidden-source-map' : "none";
+    const mode = development ? "development" : "production";
     return {
         entry: "./src/Main.ts",
         externals: ["file-saver", "JSZip"],
-        devtool: env === "development" ? 'hidden-source-map' : "none",
+        devtool,
         module: {
             rules: [
                 {
@@ -29,7 +31,7 @@ module.exports = env => {
                 },
             ]
         },
-        mode: env,
+        mode,
         resolve: {
             extensions: ['.tsx', '.ts', '.js'],
             modules: ["./node_modules", "./src"]
@@ -51,6 +53,7 @@ module.exports = env => {
             filename: "fetishDownloader.user.js",
             libraryTarget: "umd",
             library: "Fetish",
+            globalObject: 'this'
         }
     }
 };

@@ -1,4 +1,4 @@
-import {MoeBooru} from "./MoeBooru";
+import {MoeBooru} from "../MoeBooru";
 import {SITES} from "../IFetishSite";
 
 export class LoliBooru extends MoeBooru{

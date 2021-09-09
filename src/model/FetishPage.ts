@@ -2,7 +2,7 @@ import {IFetishPage} from "./IFetishPage";
 import {IFetishDocumentParser} from "../parser/IFetishDocumentParser";
 import {FetishImage} from "./impl/FetishImage";
 import {SITES} from "../site/IFetishSite";
-import {KonachanParser} from "../parser/impl/FetishDocumentParser";
+import {MoeBooruParser} from "../parser/impl/MoeBooruParser";
 
 export class FetishPage implements IFetishPage {
     protected fetishDocumentParser: IFetishDocumentParser;
@@ -13,7 +13,8 @@ export class FetishPage implements IFetishPage {
         switch (site) {
             case SITES.KONACHAN:
             case SITES.LOLIBOORU:
-                this.fetishDocumentParser = new KonachanParser();
+            case SITES.YANDE:
+                this.fetishDocumentParser = new MoeBooruParser();
                 break;
         }
         this.doc = doc;
