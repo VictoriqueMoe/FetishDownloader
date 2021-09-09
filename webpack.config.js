@@ -10,7 +10,6 @@ module.exports = env => {
     const mode = development ? "development" : "production";
     return {
         entry: "./src/Main.ts",
-        externals: ["file-saver", "JSZip"],
         devtool,
         module: {
             rules: [

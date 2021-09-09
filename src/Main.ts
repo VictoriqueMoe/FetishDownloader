@@ -1,6 +1,5 @@
 import {FetishImage} from "model/impl/FetishImage";
 import {DomUtil, QueryString} from "utils/Utils";
-import * as JSZip from "JSZip";
 import * as Awesomplete from "Awesomplete";
 import {Suggestion} from "awesomplete";
 import "awesomplete/awesomplete.base.css";
@@ -10,6 +9,8 @@ import {ImageLoader} from "./model/modules/ImageLoader";
 import "css/custom.css";
 import {FetishSiteFactory} from "./factory/FetishSiteFactory";
 import {UIFactory} from "./factory/UIFactory";
+import * as fflate from 'fflate';
+import {saveAs} from 'file-saver';
 
 export module Main {
     let _isInit: boolean = false;
@@ -20,20 +21,27 @@ export module Main {
         [index: string]: string[]
     };
 
-    export function doDownloadZip(files: FetishImage[], title?: string): Promise<void> {
+    export async function doDownloadZip(files: FetishImage[], title?: string): Promise<void> {
         setLabel("compressing");
-        let zip: JSZip = new JSZip();
+        const obj: fflate.Zippable = {};
         for (let img of files) {
-            zip.file(img.title, img.image);
+            const buffer = await img.image.arrayBuffer();
+            obj[img.title] = new Uint8Array(buffer);
         }
-        return zip.generateAsync({type: "blob"}).then(blob => {
-            if (!title) {
-                title = QueryString.tags;
-            } else {
-                title = `${QueryString.tags} (${title})`;
-            }
-            saveAs(blob, title + ".zip");
-            setLabel();
+        return new Promise((resolve, reject) => {
+            fflate.zip(obj, (err, data) => {
+                if (err) {
+                    reject(err);
+                }
+                if (!title) {
+                    title = QueryString.tags;
+                } else {
+                    title = `${QueryString.tags} (${title})`;
+                }
+                saveAs(new Blob([data]), title + ".zip");
+                setLabel();
+                resolve();
+            });
         });
     }
 
