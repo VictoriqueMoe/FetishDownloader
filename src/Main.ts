@@ -9,8 +9,8 @@ import {ImageLoader} from "./model/modules/ImageLoader";
 import "css/custom.css";
 import {FetishSiteFactory} from "./factory/FetishSiteFactory";
 import {UIFactory} from "./factory/UIFactory";
-import * as fflate from 'fflate';
 import {saveAs} from 'file-saver';
+import * as zip from "@zip.js/zip.js";
 
 export module Main {
     let _isInit: boolean = false;
@@ -23,26 +23,19 @@ export module Main {
 
     export async function doDownloadZip(files: FetishImage[], title?: string): Promise<void> {
         setLabel("compressing");
-        const obj: fflate.Zippable = {};
-        for (let img of files) {
-            const buffer = await img.image.arrayBuffer();
-            obj[img.title] = new Uint8Array(buffer);
+        const blobWriter = new zip.BlobWriter("application/zip");
+        const writer = new zip.ZipWriter(blobWriter);
+        const pArr = files.map(image => writer.add(image.title, new zip.BlobReader(image.image)));
+        await Promise.all(pArr);
+        await writer.close();
+        const blob = await blobWriter.getData();
+        if (!title) {
+            title = QueryString.tags;
+        } else {
+            title = `${QueryString.tags} (${title})`;
         }
-        return new Promise((resolve, reject) => {
-            fflate.zip(obj, (err, data) => {
-                if (err) {
-                    reject(err);
-                }
-                if (!title) {
-                    title = QueryString.tags;
-                } else {
-                    title = `${QueryString.tags} (${title})`;
-                }
-                saveAs(new Blob([data]), title + ".zip");
-                setLabel();
-                resolve();
-            });
-        });
+        saveAs(blob, title + ".zip");
+        setLabel();
     }
 
     export function setLabel(str: string = "Download all your fetishes"): void {

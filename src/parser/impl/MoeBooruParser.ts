@@ -44,10 +44,10 @@ export class MoeBooruParser implements IFetishDocumentParser {
             tags = slice;
         }
         return {
-            url: url,
-            res: res,
-            title: title,
-            tags: tags
+            url,
+            res,
+            title,
+            tags
         };
     }
 }

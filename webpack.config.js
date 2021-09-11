@@ -1,28 +1,19 @@
 module.exports = env => {
     const CircularDependencyPlugin = require('circular-dependency-plugin');
     const path = require("path");
-    const {CheckerPlugin} = require('awesome-typescript-loader');
     const webpack = require("webpack");
     const fs = require('fs');
     const METADATA = fs.readFileSync('./GM.txt', 'utf8');
-    const {development} = env;
-    const devtool = development ? 'hidden-source-map' : "none";
+    const development = env["development"] === true;
     const mode = development ? "development" : "production";
-    return {
+    const retObj = {
         entry: "./src/Main.ts",
-        devtool,
         module: {
             rules: [
                 {
                     test: /\.tsx?$/,
-                    use: [
-                        {
-                            loader: 'awesome-typescript-loader'
-                        }
-                    ],
-                    exclude: [
-                        /node_modules/
-                    ]
+                    use: 'ts-loader',
+                    exclude: /node_modules/,
                 },
                 {
                     test: /\.css$/,
@@ -40,7 +31,6 @@ module.exports = env => {
                 failOnError: false,
                 cwd: process.cwd(),
             }),
-            new CheckerPlugin(),
             new webpack.BannerPlugin({
                 banner: METADATA,
                 raw: true,
@@ -49,10 +39,14 @@ module.exports = env => {
         ],
         output: {
             path: path.join(__dirname, "dist"),
-            filename: "fetishDownloader.user.js",
+            filename: `fetishDownloader.user${development === false ? ".min" : ""}.js`,
             libraryTarget: "umd",
             library: "Fetish",
             globalObject: 'this'
         }
     }
+    if (development) {
+        retObj["devtool"] = "eval-source-map";
+    }
+    return retObj;
 };
